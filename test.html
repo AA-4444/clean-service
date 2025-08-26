@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n-title="City Wall Clean - Профессиональное удаление граффити и очистка фасадов в Латвии">City Wall Clean - Профессиональное удаление граффити и очистка фасадов в Латвии</title>
+    <meta name="description" data-i18n-description="Профессиональная мойка фасадов, удаление граффити, чистка брусчатки в Риге. Уникальная технология DANSAND. Быстро, качественно, экологично." content="Профессиональная мойка фасадов, удаление граффити, чистка брусчатки в Риге. Уникальная технология DANSAND. Быстро, качественно, экологично.">
+    <link rel="stylesheet" href="style2.css">
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      referrerpolicy="no-referrer">
+</head>
+<body>
+    <!-- Fixed Phone Button -->
+   <a href="tel:+37120888803" class="fixed-phone-btn" aria-label="Позвонить">
+  <i class="fa-solid fa-phone phone-icon" aria-hidden="true"></i>
+</a>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-brand">
+                <div class="logo">
+                    <span>C</span>
+                </div>
+                <span class="brand-name" data-i18n="brand">City Wall Clean</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#services" data-i18n="nav.services">Услуги</a>
+                <a href="#equipment" data-i18n="nav.equipment">Оборудование</a>
+                <a href="#gallery" data-i18n="nav.gallery">Галерея</a>
+                <a href="#contact" data-i18n="nav.contact">Контакты</a>
+            </nav>
+
+            <div class="header-actions">
+                <!-- Language Switcher -->
+              <div class="language-switcher">
+
+  <button onclick="switchLanguage('ru')" class="lang-btn active" id="lang-ru">RU</button>
+  <button onclick="switchLanguage('lv')" class="lang-btn" id="lang-lv">LV</button>
+  <button onclick="switchLanguage('en')" class="lang-btn" id="lang-en">EN</button>
+
+  
+  <div class="lang-mobile">
+    <button class="lang-toggle" aria-label="Change language" aria-expanded="false" aria-haspopup="true" onclick="toggleLangMenu(this)">
+      <!-- simple globe icon (SVG) -->
+      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="currentColor" d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2Zm7.93 9h-3.2a15.7 15.7 0 0 0-1.18-5.02A8.02 8.02 0 0 1 19.93 11ZM15.2 11h-6.4A13.9 13.9 0 0 1 12 4.06 13.9 13.9 0 0 1 15.2 11Zm-8.73 0H3.07A8.02 8.02 0 0 1 8.45 5.98 15.7 15.7 0 0 0 6.47 11Zm0 2a15.7 15.7 0 0 0 1.98 5.02A8.02 8.02 0 0 1 3.07 13h3.4Zm1.33 0h6.4A13.9 13.9 0 0 1 12 19.94 13.9 13.9 0 0 1 7.8 13Zm7.53 0h3.6a8.02 8.02 0 0 1-4.38 6.02c.83-1.6 1.37-3.2 1.78-6.02Z"/>
+      </svg>
+    </button>
+    <div class="lang-menu" role="menu">
+      <button type="button" role="menuitem" data-lang="ru" onclick="selectLangFromMenu('ru')">RU — Русский</button>
+      <button type="button" role="menuitem" data-lang="lv" onclick="selectLangFromMenu('lv')">LV — Latviešu</button>
+      <button type="button" role="menuitem" data-lang="en" onclick="selectLangFromMenu('en')">EN — English</button>
+    </div>
+  </div>
+</div>
+                
+                <button class="cta-button" onclick="scrollToContact()" data-i18n="order.cleaning">Заказать очистку</button>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#services" data-i18n="nav.services">Услуги</a>
+            <a href="#equipment" data-i18n="nav.equipment">Оборудование</a>
+            <a href="#gallery" data-i18n="nav.gallery">Галерея</a>
+            <a href="#contact" data-i18n="nav.contact">Контакты</a>
+        </div>
+    </header>
+
+  <section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+     
+      <div class="hero-text">
+     <h1 class="hero-title" data-i18n="hero.title">
+  <span class="hero-black">Профессиональное</span> <span class="hero-green">удаление граффити и очистка фасадов</span>
+</h1>
+        <p class="hero-subtitle" data-i18n="hero.subtitle">
+          Используем экологически безопасные технологии и современное оборудование для качественной очистки любых поверхностей
+        </p>
+        <button class="hero-cta" onclick="scrollToContact()" data-i18n="hero.cta">
+          Заказать очистку
+        </button>
+      </div>
+
+     
+      <aside class="hero-media" aria-hidden="true">
+        <div class="hero-card">
+          <img src="images/professional-cleaner.jpg" alt="" loading="lazy">
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+
+   <!-- Services Section  -->
+<section id="services">
+  <div class="container">
+    <div class="section-header">
+      <h2>Наши услуги</h2>
+      <p>Профессиональная очистка поверхностей без воды, без химии, без высокого давления</p>
+    </div>
+
+    <div class="services-grid services-grid--40vw">
+      
+      <article class="service-card">
+        <img src="images/download.jpg" alt="Очистка граффити">
+        <div class="service-content">
+          <span class="service-price">от 1500₽/м²</span>
+          <h3>Очистка граффити</h3>
+          <p>Устранение граффити со стен дома быстро и бережно. Запатентованная система Tornado&nbsp;ACS удаляет стойкие загрязнения без повреждения основы.</p>
+          <ul class="service-features">
+            <li>Без воды и химии</li>
+            <li>Без высокого давления</li>
+            <li>Работа круглый год</li>
+          </ul>
+        </div>
+      </article>
+
+      
+      <article class="service-card">
+        <img src="images/download-1.jpg" alt="Очистка фасадов">
+        <div class="service-content">
+          <span class="service-price">от 200₽/м²</span>
+          <h3>Очистка фасадов</h3>
+          <p>Комплексная мойка и восстановление фасадов: удаляем грязь, налёт и следы времени. Подходит для кирпича, камня, плитки, бетона.</p>
+          <ul class="service-features">
+            <li>Деликатно к материалу</li>
+            <li>Продлевает срок службы</li>
+            <li>Чисто без отходов</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+    <!-- Equipment Section -->
+<section id="equipment" class="equipment">
+  <div class="container">
+    <div class="section-header">
+      <h2>Оборудование Tornado&nbsp;ACS</h2>
+      <p>Вакуумная абразивная очистка: без воды, без химии, без высокого давления</p>
+    </div>
+
+    <div class="equipment-grid equipment-grid--single">
+      <article class="equipment-card">
+        <img src="images/tornado-acs.jpg" alt="Клининговое оборудование Tornado ACS">
+        <div class="equipment-content">
+          <h3>Удаление граффити и восстановление поверхностей</h3>
+          <p>
+            С помощью очистительной техники Tornado&nbsp;ACS граффити удаляются со стен дома быстро и легко.
+            Запатентованная система systeco работает в режиме замкнутого цикла — отходы не попадают наружу.
+          </p>
+          <div class="equipment-features">
+            <div>Без высокого давления, без воды и без химических веществ</div>
+            <div>Бережно к поверхности и экологично</div>
+            <div>Компактно, требуется только питание 220В</div>
+            <div>Эффективно даже в холодное время года</div>
+            <div>Подходит для плитки, полов, реставрации памятников, удаления сажи после пожаров</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+    <!-- Gallery Section -->
+ <section id="gallery" class="gallery">
+  <div class="container">
+    <div class="section-header">
+      <h2 data-i18n="gallery.title">Наши работы</h2>
+      <p data-i18n="gallery.subtitle">Примеры выполненных работ</p>
+    </div>
+
+    <div class="gallery-grid">
+      <!-- Кейc 1: ДО/ПОСЛЕ — как было -->
+      <div class="gallery-pair">
+        <div class="gallery-item before">
+          <img src="images/1.jpg" alt="До очистки граффити">
+          <div class="gallery-label" data-i18n="gallery.before">ДО</div>
+        </div>
+        <div class="gallery-item after">
+          <img src="images/2.jpg" alt="После очистки граффити">
+          <div class="gallery-label" data-i18n="gallery.after">ПОСЛЕ</div>
+        </div>
+      </div>
+
+      <!-- Кейc 2: 3 фото в карусели (без надписей) -->
+      <div class="gallery-carousel" aria-label="Как мы работаем">
+        <button class="gcar-btn gcar-btn--prev" type="button" aria-label="Предыдущий">‹</button>
+        <div class="gallery-viewport">
+          <div class="gallery-track" id="gcarTrack">
+            <div class="gallery-slide"><img src="images/3.jpg" alt="Процесс очистки 1"></div>
+            <div class="gallery-slide"><img src="images/4.jpg" alt="Процесс очистки 2"></div>
+            <div class="gallery-slide"><img src="images/5.jpg" alt="Процесс очистки 3"></div>
+          </div>
+        </div>
+        <button class="gcar-btn gcar-btn--next" type="button" aria-label="Следующий">›</button>
+        <div class="gcar-dots" id="gcarDots"></div>
+      </div>
+
+      <!-- остальные пары/кейсы можешь оставить как у тебя ниже -->
+      <!-- ... -->
+    </div>
+  </div>
+</section>
+
+   <!-- Contact Section -->
+<section id="contact" class="contact">
+  <div class="container">
+    <div class="section-header">
+      <h2 data-i18n="contact.title">Свяжитесь с нами</h2>
+      <p data-i18n="contact.subtitle">Получите бесплатную консультацию и расчет стоимости работ</p>
+    </div>
+
+    <div class="contact-grid">
+     
+      <div class="card form-card">
+        <h3>Оставить заявку</h3>
+        <p class="card-sub">Заполните форму, и мы свяжемся с вами в течение 2х рабочих дней</p>
+
+        <form class="lead-form" onsubmit="submitForm(event)">
+          <div class="field two">
+            <input type="text" name="name" placeholder="Ваше имя" required>
+            <input type="tel" name="phone" placeholder="Телефон" required>
+          </div>
+          <div class="field">
+            <input type="email" name="email" placeholder="Email" required>
+          </div>
+          <div class="field">
+            <textarea name="message" placeholder="Опишите задачу..." rows="5"></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary">Отправить заявку</button>
+
+          <p class="form-hint">
+            Нажимая на кнопку, вы даёте согласие на обработку персональных данных и соглашаетесь с
+            политикой конфиденциальности
+          </p>
+        </form>
+      </div>
+
+     
+      <div class="info-column">
+        <!-- contacts -->
+        <div class="card info-card">
+          <h3><i class="fa-solid fa-phone icon"></i> Связаться с нами</h3>
+
+          <div class="row">
+            <i class="fa-solid fa-phone icon"></i>
+            <div>
+              <a href="tel:+37120888803" class="link-strong">+371 20888803</a>
+              <div class="muted">Основной номер</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <i class="fa-solid fa-envelope icon"></i>
+            <div>
+              <a href="mailto:info@cleanlines.lv" class="link-strong">info@cleanlines.lv</a>
+              <div class="muted">Email для заявок</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <i class="fa-solid fa-location-dot icon"></i>
+            <div>
+              Цесвайнес 15A-211
+              <div class="muted">Рига, LV-1073, Латвия</div>
+            </div>
+          </div>
+        </div>
+
+        
+        <div class="card info-card">
+          <h3><i class="fa-solid fa-clock icon"></i> Рабочие часы</h3>
+
+          <div class="kv">
+            <span>Понедельник – Пятница:</span>
+            <strong>8:00 – 18:00</strong>
+          </div>
+          <div class="kv">
+            <span>Суббота:</span>
+            <strong>9:00 – 16:00</strong>
+          </div>
+          <div class="kv">
+            <span>Воскресенье:</span>
+            <span class="muted">Выходной</span>
+          </div>
+
+          <div class="badge">
+            <strong>Экстренные вызовы 24/7</strong>
+            <div class="muted">Для срочных случаев доступны круглосуточно</div>
+          </div>
+        </div>
+
+       
+        <div class="card info-card">
+          <h3><i class="fa-solid fa-share-nodes icon"></i> Социальные сети</h3>
+          <p class="card-sub">Следите за нашими работами и получайте советы по уходу</p>
+
+          <div class="socials">
+            <a class="btn-ghost" href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i> Facebook</a>
+            <a class="btn-ghost" href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i> Instagram</a>
+            <a class="btn-wa" href="https://wa.me/37120888803" target="_blank" rel="noopener">
+              <i class="fa-brands fa-whatsapp"></i> WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span>C</span>
+                    </div>
+                    <span class="brand-name" data-i18n="brand">City Wall Clean</span>
+                </div>
+                
+                <p class="footer-text" data-i18n="footer.copyright">© 2024 City Wall Clean. Все права защищены. Профессиональная очистка в Латвии.</p>
+                
+                <div class="footer-contacts">
+                    <a href="tel:+37120888803">+371 20888803</a>
+                    <a href="mailto:info@cleanlines.lv">info@cleanlines.lv</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal for gallery images -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <img id="modalImage" src="" alt="">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+ <script>
+(function(){
+  const wrap  = document.querySelector('.gallery-carousel');
+  const viewport = wrap?.querySelector('.gallery-viewport');
+  const track = document.getElementById('gcarTrack');
+  if(!wrap || !viewport || !track) return;
+
+  const prev = wrap.querySelector('.gcar-btn--prev');
+  const next = wrap.querySelector('.gcar-btn--next');
+  const dotsWrap = document.getElementById('gcarDots');
+
+  // === helpers
+  const gap = ()=> parseFloat(getComputedStyle(track).gap) || 0;
+  function slideWidth(){
+    const cs = getComputedStyle(viewport);
+    const pl = parseFloat(cs.paddingLeft) || 0;
+    const pr = parseFloat(cs.paddingRight) || 0;
+    return viewport.clientWidth - pl - pr;
+  }
+
+  
+  const originals = Array.from(track.children);
+  const firstClone = originals[0].cloneNode(true);
+  const lastClone  = originals[originals.length-1].cloneNode(true);
+  firstClone.classList.add('is-clone');
+  lastClone.classList.add('is-clone');
+
+  
+  track.prepend(lastClone);
+  track.append(firstClone);
+
+  let slides = Array.from(track.children);
+  const REAL_COUNT = originals.length;
+
+  
+  let index = 1;
+
+  // dots only for real slides
+  dotsWrap.innerHTML = '';
+  for(let i=0;i<REAL_COUNT;i++){
+    const b = document.createElement('button');
+    b.addEventListener('click', ()=>{ index = i+1; goTo(index, true); restartAutoplay(); });
+    dotsWrap.appendChild(b);
+  }
+
+  function setActiveDot(){
+    const realIdx = (index-1 + REAL_COUNT) % REAL_COUNT; // 0..REAL_COUNT-1
+    dotsWrap.querySelectorAll('button').forEach((d,i)=> d.classList.toggle('is-active', i===realIdx));
+  }
+
+  function setCenterClass(){
+    slides.forEach((el,i)=> el.classList.toggle('is-center', i===index));
+  }
+
+  function translateByIndex(animate=true){
+    const w = slideWidth();
+    const tx = -(index * (w + gap()));
+    if(!animate){
+      const old = getComputedStyle(track).transition;
+      track.style.transition = 'none';
+      track.style.transform  = `translateX(${tx}px)`;
+      
+      track.offsetHeight;
+      track.style.transition = old;
+    }else{
+      track.style.transform  = `translateX(${tx}px)`;
+    }
+    setCenterClass(); setActiveDot();
+  }
+
+  function goTo(i, animate=true){
+    index = i;
+    translateByIndex(animate);
+  }
+
+  // snap back seamlessly when we hit clones
+  track.addEventListener('transitionend', ()=>{
+    if(slides[index].classList.contains('is-clone')){
+      if(index === 0){               
+        index = REAL_COUNT;        
+      }else if(index === slides.length-1){ 
+        index = 1;
+      }
+      translateByIndex(false);       
+    }
+  });
+
+  // controls
+  prev.addEventListener('click', ()=>{ index--; goTo(index, true); restartAutoplay(); });
+  next.addEventListener('click', ()=>{ index++; goTo(index, true); restartAutoplay(); });
+
+  // autoplay
+  let autoplayTimer = null;
+  function startAutoplay(){
+    stopAutoplay();
+    autoplayTimer = setInterval(()=>{ index++; goTo(index, true); }, 3200);
+  }
+  function stopAutoplay(){ if(autoplayTimer){ clearInterval(autoplayTimer); autoplayTimer=null; } }
+  function restartAutoplay(){ stopAutoplay(); startAutoplay(); }
+  wrap.addEventListener('mouseenter', stopAutoplay);
+  wrap.addEventListener('mouseleave', startAutoplay);
+  wrap.addEventListener('focusin', stopAutoplay);
+  wrap.addEventListener('focusout', startAutoplay);
+
+  // swipe
+  let startX=null, startTx=0;
+  track.addEventListener('pointerdown', (e)=>{
+    if(e.pointerType==='mouse') return;
+    startX = e.clientX; startTx = currentTx();
+    track.style.transition = 'none';
+    track.setPointerCapture(e.pointerId);
+    stopAutoplay();
+  });
+  track.addEventListener('pointermove', (e)=>{
+    if(startX===null) return;
+    const dx = e.clientX - startX;
+    track.style.transform = `translateX(${startTx + dx}px)`;
+  });
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>{
+    track.addEventListener(ev, (e)=>{
+      if(startX===null) return;
+      const dx = e.clientX - startX;
+      const thr = 50;
+      track.style.transition = ''; // restore
+      if(Math.abs(dx) > thr){
+        if(dx < 0) index++; else index--;
+        goTo(index, true);
+      }else{
+        goTo(index, true);
+      }
+      startX=null;
+      startAutoplay();
+    });
+  });
+
+  function currentTx(){
+    const m = new DOMMatrixReadOnly(getComputedStyle(track).transform);
+    return m.m41;
+  }
+
+  // keep layout stable
+  window.addEventListener('resize', ()=> translateByIndex(false));
+
+  // init
+  translateByIndex(false);
+  startAutoplay();
+})();
+</script>
+</body>
+</html>
