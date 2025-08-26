@@ -5,6 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n-title="City Wall Clean - Профессиональное удаление граффити и очистка фасадов в Латвии">City Wall Clean - Профессиональное удаление граффити и очистка фасадов в Латвии</title>
     <meta name="description" data-i18n-description="Профессиональная мойка фасадов, удаление граффити, чистка брусчатки в Риге. Уникальная технология DANSAND. Быстро, качественно, экологично." content="Профессиональная мойка фасадов, удаление граффити, чистка брусчатки в Риге. Уникальная технология DANSAND. Быстро, качественно, экологично.">
+    <link rel="prefetch" href="index.html?skiploader=1">
+    
+<style>
+  .fade-out { opacity: 0; transition: opacity .35s ease; }
+</style>
+<script>
+  // Если пришли со страницы загрузки, включаем плавный фейд-ин
+  (function () {
+    const params = new URLSearchParams(location.search);
+    if (params.has('skiploader')) {
+      document.documentElement.classList.add('page-enter');
+      // Активируем анимацию после рендера
+      window.addEventListener('DOMContentLoaded', () => {
+        requestAnimationFrame(() => {
+          document.documentElement.classList.add('page-enter-active');
+        });
+      });
+    }
+  })();
+</script>
+<script>
+(function () {
+  try {
+    const params = new URLSearchParams(location.search);
+    if (params.has('skiploader')) return; // для отладки
+
+    // Проверяем, был ли уже загрузочный экран
+    if (!sessionStorage.getItem('loaderShown')) {
+      sessionStorage.setItem('loaderShown', '1');
+      location.replace('loading.html');
+    }
+  } catch (e) {
+    location.replace('loading.html');
+  }
+})();
+</script>
     <link rel="stylesheet" href="style2.css">
     <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -351,6 +387,7 @@
     </div>
 
          <script src="script.js"></script>
+         
 
 </body>
 </html>

@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WallClip - Loading</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #ffffff;
+            color: #2d3748;
+            overflow: hidden;
+        }
+
+        .loading-container {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: #ffffff;
+        }
+
+        /* Paint Drips Background */
+        .paint-drips {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .drip {
+            position: absolute;
+            top: 0;
+            background: linear-gradient(180deg, transparent, #22c55e);
+            opacity: 0.3;
+            animation: paintDrip 2s ease-in-out infinite;
+        }
+
+        .drip:nth-child(1) {
+            left: 25%;
+            width: 8px;
+            animation-delay: 0s;
+        }
+
+        .drip:nth-child(2) {
+            left: 50%;
+            width: 12px;
+            animation-delay: 0.5s;
+        }
+
+        .drip:nth-child(3) {
+            right: 33%;
+            width: 8px;
+            animation-delay: 1s;
+        }
+
+        .drip:nth-child(4) {
+            right: 25%;
+            width: 16px;
+            animation-delay: 0.3s;
+        }
+
+        /* Main Content */
+        .main-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .main-content.transforming {
+            opacity: 0.1;
+            transform: scale(0.9);
+            filter: blur(3px);
+        }
+
+        /* Company Logo */
+        .company-logo {
+            margin-bottom: 3rem;
+            animation: cleanReveal 1s ease-out forwards;
+        }
+
+        .company-name {
+            font-size: 5rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .brand-green {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #22c55e;
+            margin-bottom: 0.5rem;
+        }
+
+        .services {
+            font-size: 1.1rem;
+            color: #6b7280;
+        }
+
+        /* Transformation Visual */
+        .transformation {
+            position: relative;
+            margin-bottom: 4rem;
+            height: 80px;
+        }
+
+        .graffiti-text {
+            font-size: 4rem;
+            font-weight: 900;
+            color: #ef4444;
+            transition: all 2s ease-in-out;
+        }
+
+        .graffiti-text.transforming {
+            opacity: 0.2;
+            filter: blur(4px);
+            transform: scale(0.9);
+        }
+
+        .clean-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            font-weight: 900;
+            color: #22c55e;
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            transition: all 1s ease-out;
+        }
+
+        .clean-text.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 2rem;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .progress-container.washing {
+            opacity: 0;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #f3f4f6;
+            border-radius: 9999px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #22c55e);
+            border-radius: 9999px;
+            transition: width 0.3s ease-out;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+            animation: professionalGlow 3s ease-in-out infinite;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #22c55e;
+        }
+
+        /* Loading Text */
+        .loading-text {
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .loading-text.washing {
+            opacity: 0;
+        }
+
+        .loading-message {
+            font-size: 1.1rem;
+            color: #6b7280;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        /* Service Icons */
+        .service-icons {
+            position: absolute;
+            bottom: 5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 2rem;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .service-icons.washing {
+            opacity: 0;
+        }
+
+        .service-icon {
+            text-align: center;
+        }
+
+        .icon-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin: 0 auto 0.5rem;
+            opacity: 0.7;
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.25);
+        }
+
+        .icon-circle.clipping {
+            background: #22c55e;
+        }
+
+        .icon-circle.cloning {
+            background: #10b981;
+        }
+
+        .icon-circle.restore {
+            background: #059669;
+        }
+
+        .service-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        /* Washing Overlay */
+        .wash-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 0%, #ffffff 100%);
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+
+        .wash-overlay.active {
+            opacity: 1;
+        }
+
+        /* Animations */
+        @keyframes paintDrip {
+            0% {
+                height: 0;
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.4;
+            }
+            100% {
+                height: 100vh;
+                opacity: 0.2;
+            }
+        }
+
+        @keyframes cleanReveal {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+                filter: blur(2px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes professionalGlow {
+            0%, 100% {
+                box-shadow: 0 0 5px rgba(34, 197, 94, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(34, 197, 94, 0.5), 0 0 30px rgba(34, 197, 94, 0.3);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Hidden state for completion */
+        .loading-container.completed {
+            opacity: 0;
+            transform: scale(1.1);
+            transition: all 1s ease-in-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .company-name {
+                font-size: 3.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.4rem;
+            }
+            
+            .graffiti-text,
+            .clean-text {
+                font-size: 3rem;
+            }
+            
+            .service-icons {
+                gap: 1.5rem;
+            }
+        }
+        /* Центрируем прогресс-бар и не даём ему прилипать слева */
+.progress-container {
+  width: 100%;
+  max-width: 420px;
+  margin: 2rem auto;         /* <— центр */
+  text-align: center;
+}
+
+/* Чтобы тексты/иконки не наезжали на прогресс-бар — делаем их обычными блоками */
+.loading-text {
+  position: static;
+  margin: 1rem auto 0;
+}
+
+/* Раньше иконки были absolute снизу — из-за этого они могли наезжать.
+   Делаем их обычным блоком под текстом. */
+.service-icons {
+  position: static;
+  transform: none;
+  bottom: auto;
+  left: auto;
+  margin: 1.5rem auto 0;
+  justify-content: center;   /* центр по горизонтали */
+  flex-wrap: wrap;           /* чтобы на узких экранах переносились */
+  gap: 1.25rem;
+}
+
+/* Чуть уменьшим боковые тени/яркость, чтобы визуально не спорили с прогресс-баром */
+.icon-circle {
+  box-shadow: 0 3px 14px rgba(34, 197, 94, 0.22);
+}
+
+/* Чтобы всё по центру и вертикальные отступы были ровные */
+.main-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* ключ к идеальному центру */
+}
+
+/* Если вы оставили .wash-overlay — она уже поверх. Чтобы не «мигало», хватает описанного flow */
+    </style>
+</head>
+<body>
+    <div class="loading-container" id="loadingContainer">
+        <!-- Paint Drips Background -->
+        <div class="paint-drips">
+            <div class="drip"></div>
+            <div class="drip"></div>
+            <div class="drip"></div>
+            <div class="drip"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <!-- Company Logo -->
+            <div class="company-logo">
+                <h1 class="company-name">
+                    City Wall<span class="brand-green">Clean</span>
+                </h1>
+                <div class="tagline">პროფესიონალური გრაფიტის მოცილება</div>
+<div class="services">დასუფთავება, მოცილება</div>
+            </div>
+
+       
+
+            <!-- Progress Bar -->
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
+
+            <!-- Loading Text -->
+            <div class="loading-text" id="loadingText">
+                <p class="loading-message" id="loadingMessage">Analyzing surfaces...</p>
+                <div class="loading-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+
+            <!-- Service Icons -->
+            <div class="service-icons" id="serviceIcons">
+                <div class="service-icon">
+                    <div class="icon-circle clipping"></div>
+                    <span class="service-label">Clipping</span>
+                </div>
+                <div class="service-icon">
+                    <div class="icon-circle cloning"></div>
+                    <span class="service-label">Cloning</span>
+                </div>
+                <div class="service-icon">
+                    <div class="icon-circle restore"></div>
+                    <span class="service-label">Restore</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Washing Overlay -->
+        <div class="wash-overlay" id="washOverlay"></div>
+    </div>
+
+    <script>
+  class LoadingScreen {
+    constructor() {
+      this.progress = 0;
+      this.isTransforming = false;
+      this.elements = {
+        progressFill: document.getElementById('progressFill'),
+        progressText: document.getElementById('progressText'),
+        loadingMessage: document.getElementById('loadingMessage'),
+        mainContent: document.getElementById('mainContent'),
+        progressContainer: document.getElementById('progressContainer'),
+        loadingText: document.getElementById('loadingText'),
+        serviceIcons: document.getElementById('serviceIcons'),
+        washOverlay: document.getElementById('washOverlay'),
+        loadingContainer: document.getElementById('loadingContainer')
+      };
+
+      this.messages = [
+        'Analyzing surfaces...',
+        'Processing graffiti...',
+        'Preparing clean walls...'
+      ];
+
+      this.init();
+    }
+
+    init() { this.startLoading(); }
+
+    startLoading() {
+      const interval = setInterval(() => {
+        if (this.progress >= 100) {
+          clearInterval(interval);
+          this.completeLoading();
+          return;
+        }
+        this.progress += Math.random() * 12;
+        this.progress = Math.min(this.progress, 100);
+        this.updateProgress();
+        this.updateMessage();
+      }, 200);
+    }
+
+    updateProgress() {
+      const rounded = Math.round(this.progress);
+      this.elements.progressFill.style.width = `${this.progress}%`;
+      this.elements.progressText.textContent = `${rounded}%`;
+    }
+
+    updateMessage() {
+      let i = 0;
+      if (this.progress >= 50) i = 1;
+      if (this.progress >= 80) i = 2;
+      this.elements.loadingMessage.textContent = this.messages[i];
+    }
+
+    completeLoading() {
+      setTimeout(() => { this.startTransformation(); }, 500);
+    }
+
+    startTransformation() {
+      this.isTransforming = true;
+
+      // Лёгкий «уход» контента
+      this.elements.mainContent.classList.add('transforming');
+
+      // Прячем вспомогательные блоки
+      this.elements.progressContainer.classList.add('washing');
+      this.elements.loadingText.classList.add('washing');
+      this.elements.serviceIcons.classList.add('washing');
+
+      // Запускаем «волну мойки»
+      setTimeout(() => {
+        this.elements.washOverlay.classList.add('active');
+      }, 300);
+
+      // Завершаем
+      setTimeout(() => { this.onComplete(); }, 1200);
+    }
+
+    onComplete() {
+      this.elements.loadingContainer.classList.add('completed');
+      setTimeout(() => {
+        this.elements.loadingContainer.style.display = 'none';
+        this.initMainApp();
+      }, 400);
+    }
+
+    initMainApp() {
+      // Плавный выход + переход на сайт
+      const go = () => { location.href = "index.html?skiploader=1"; };
+      if (document.startViewTransition) {
+        document.startViewTransition(go);
+      } else {
+        document.body.classList.add('fade-out');
+        setTimeout(go, 350);
+      }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => new LoadingScreen());
+</script>
+</body>
+</html>
