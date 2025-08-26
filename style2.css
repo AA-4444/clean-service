@@ -1409,3 +1409,18 @@ html {
   .contact-grid{ grid-template-columns: 1fr; }
   .lead-form .field.two{ grid-template-columns: 1fr; }
 }
+/* 🔧 фикс для iPhone горизонтального скролла */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* уменьшенный hero-заголовок для телефонов */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.6rem;    /* вместо clamp(2.2rem...) */
+    line-height: 1.2;
+    max-width: 95%;       /* чтобы текст не толкал экран */
+    word-wrap: break-word;
+  }
+}
