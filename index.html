@@ -12,7 +12,7 @@
 </head>
 <body>
     <!-- Fixed Phone -->
-   <a href="tel:+37120888803" class="fixed-phone-btn" aria-label="Позвонить">
+   <a href="tel:+37120888803" class="fixed-phone-btn" aria-label="Позвонить" data-i18n-aria="ui.call">
   <i class="fa-solid fa-phone phone-icon" aria-hidden="true"></i>
 </a>
 
@@ -38,12 +38,12 @@
               <div class="language-switcher">
 
   <button onclick="switchLanguage('ru')" class="lang-btn active" id="lang-ru">RU</button>
-  <button onclick="switchLanguage('lv')" class="lang-btn" id="lang-lv">LV</button>
+  <button onclick="switchLanguage('ka')" class="lang-btn" id="lang-ka">KA</button>
   <button onclick="switchLanguage('en')" class="lang-btn" id="lang-en">EN</button>
 
   
   <div class="lang-mobile">
-    <button class="lang-toggle" aria-label="Change language" aria-expanded="false" aria-haspopup="true" onclick="toggleLangMenu(this)">
+    <button class="lang-toggle" aria-label="Change language" data-i18n-aria="ui.lang" aria-expanded="false" aria-haspopup="true" onclick="toggleLangMenu(this)">
       <!-- simple globe icon (SVG) -->
       <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
         <path fill="currentColor" d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2Zm7.93 9h-3.2a15.7 15.7 0 0 0-1.18-5.02A8.02 8.02 0 0 1 19.93 11ZM15.2 11h-6.4A13.9 13.9 0 0 1 12 4.06 13.9 13.9 0 0 1 15.2 11Zm-8.73 0H3.07A8.02 8.02 0 0 1 8.45 5.98 15.7 15.7 0 0 0 6.47 11Zm0 2a15.7 15.7 0 0 0 1.98 5.02A8.02 8.02 0 0 1 3.07 13h3.4Zm1.33 0h6.4A13.9 13.9 0 0 1 12 19.94 13.9 13.9 0 0 1 7.8 13Zm7.53 0h3.6a8.02 8.02 0 0 1-4.38 6.02c.83-1.6 1.37-3.2 1.78-6.02Z"/>
@@ -51,7 +51,7 @@
     </button>
     <div class="lang-menu" role="menu">
       <button type="button" role="menuitem" data-lang="ru" onclick="selectLangFromMenu('ru')">RU — Русский</button>
-      <button type="button" role="menuitem" data-lang="lv" onclick="selectLangFromMenu('lv')">LV — Latviešu</button>
+      <button type="button" role="menuitem" data-lang="ka" onclick="selectLangFromMenu('ka')">KA — ქართული</button>
       <button type="button" role="menuitem" data-lang="en" onclick="selectLangFromMenu('en')">EN — English</button>
     </div>
   </div>
@@ -59,7 +59,7 @@
                 
                 <button class="cta-button" onclick="scrollToContact()" data-i18n="order.cleaning">Заказать очистку</button>
                 
-                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Меню">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -107,8 +107,8 @@
 <section id="services">
   <div class="container">
     <div class="section-header">
-      <h2>Наши услуги</h2>
-      <p>Профессиональная очистка поверхностей без воды, без химии, без высокого давления</p>
+      <h2 data-i18n="services.title">Наши услуги</h2>
+      <p data-i18n="services.subtitle">Профессиональная очистка поверхностей без воды, без химии, без высокого давления</p>
     </div>
 
     <div class="services-grid services-grid--40vw">
@@ -116,13 +116,13 @@
       <article class="service-card">
         <img src="images/download.jpg" alt="Очистка граффити">
         <div class="service-content">
-          <span class="service-price">от 1500€/м²</span>
-          <h3>Очистка граффити</h3>
-          <p>Устранение граффити со стен дома быстро и бережно. Запатентованная система Tornado&nbsp;ACS удаляет стойкие загрязнения без повреждения основы.</p>
+          <span class="service-price" data-i18n="services.graffiti.price">от 80-150₾/м²</span>
+          <h3 data-i18n="services.graffiti.title">Очистка граффити</h3>
+          <p data-i18n="services.graffiti.description">Устранение граффити со стен дома быстро и бережно. Запатентованная система Tornado&nbsp;ACS удаляет стойкие загрязнения без повреждения основы.</p>
           <ul class="service-features">
-            <li>Без воды и химии</li>
-            <li>Без высокого давления</li>
-            <li>Работа круглый год</li>
+            <li data-i18n="services.graffiti.feature1">Без воды и химии</li>
+            <li data-i18n="services.graffiti.feature2">Без высокого давления</li>
+            <li data-i18n="services.graffiti.feature3">Работа круглый год</li>
           </ul>
         </div>
       </article>
@@ -131,13 +131,13 @@
       <article class="service-card">
         <img src="images/download-1.jpg" alt="Очистка фасадов">
         <div class="service-content">
-          <span class="service-price">от 200€/м²</span>
-          <h3>Очистка фасадов</h3>
-          <p>Комплексная мойка и восстановление фасадов: удаляем грязь, налёт и следы времени. Подходит для кирпича, камня, плитки, бетона.</p>
+          <span class="service-price" data-i18n="services.facade.price">от 80-150₾/м²</span>
+          <h3 data-i18n="services.facade.title">Очистка фасадов</h3>
+          <p data-i18n="services.facade.description">Комплексная мойка и восстановление фасадов: удаляем грязь, налёт и следы времени. Подходит для кирпича, камня, плитки, бетона.</p>
           <ul class="service-features">
-            <li>Деликатно к материалу</li>
-            <li>Продлевает срок службы</li>
-            <li>Чисто без отходов</li>
+            <li data-i18n="services.facade.feature1">Деликатно к материалу</li>
+            <li data-i18n="services.facade.feature2">Продлевает срок службы</li>
+            <li data-i18n="services.facade.feature3">Чисто без отходов</li>
           </ul>
         </div>
       </article>
@@ -149,25 +149,25 @@
 <section id="equipment" class="equipment">
   <div class="container">
     <div class="section-header">
-      <h2>Оборудование Tornado&nbsp;ACS</h2>
-      <p>Вакуумная абразивная очистка: без воды, без химии, без высокого давления</p>
+      <h2 data-i18n="equipment.title">Оборудование Tornado&nbsp;ACS</h2>
+      <p data-i18n="equipment.subtitle">Вакуумная абразивная очистка: без воды, без химии, без высокого давления</p>
     </div>
 
     <div class="equipment-grid equipment-grid--single">
       <article class="equipment-card">
-        <img src="images/tornado-acs.jpg" alt="Клининговое оборудование Tornado ACS">
+        <img src="images/tornado-acs.png" alt="Клининговое оборудование Tornado ACS">
         <div class="equipment-content">
-          <h3>Удаление граффити и восстановление поверхностей</h3>
-          <p>
+          <h3 data-i18n="equipment.card.title">Удаление граффити и восстановление поверхностей</h3>
+          <p data-i18n="equipment.card.text">
             С помощью очистительной техники Tornado&nbsp;ACS граффити удаляются со стен дома быстро и легко.
             Запатентованная система systeco работает в режиме замкнутого цикла — отходы не попадают наружу.
           </p>
           <div class="equipment-features">
-            <div>Без высокого давления, без воды и без химических веществ</div>
-            <div>Бережно к поверхности и экологично</div>
-            <div>Компактно, требуется только питание 220В</div>
-            <div>Эффективно даже в холодное время года</div>
-            <div>Подходит для плитки, полов, реставрации памятников, удаления сажи после пожаров</div>
+            <div data-i18n="equipment.feature1">Без высокого давления, без воды и без химических веществ</div>
+            <div data-i18n="equipment.feature2">Бережно к поверхности и экологично</div>
+            <div data-i18n="equipment.feature3">Компактно, требуется только питание 220В</div>
+            <div data-i18n="equipment.feature4">Эффективно даже в холодное время года</div>
+            <div data-i18n="equipment.feature5">Подходит для плитки, полов, реставрации памятников, удаления сажи после пожаров</div>
           </div>
         </div>
       </article>
@@ -197,8 +197,8 @@
       </div>
 
       <!-- Кейc 2: 3 фото в карусели (без надписей) -->
-      <div class="gallery-carousel" aria-label="Как мы работаем">
-        <button class="gcar-btn gcar-btn--prev" type="button" aria-label="Предыдущий">‹</button>
+      <div class="gallery-carousel" aria-label="Как мы работаем" data-i18n-aria="gallery.carousel.aria">
+        <button class="gcar-btn gcar-btn--prev" type="button" aria-label="Предыдущий" data-i18n="ui.prev">‹</button>
         <div class="gallery-viewport">
           <div class="gallery-track" id="gcarTrack">
             <div class="gallery-slide"><img src="images/3.jpg" alt="Процесс очистки 1"></div>
@@ -206,12 +206,11 @@
             <div class="gallery-slide"><img src="images/5.jpg" alt="Процесс очистки 3"></div>
           </div>
         </div>
-        <button class="gcar-btn gcar-btn--next" type="button" aria-label="Следующий">›</button>
+        <button class="gcar-btn gcar-btn--next" type="button" aria-label="Следующий" data-i18n="ui.next">›</button>
         <div class="gcar-dots" id="gcarDots"></div>
       </div>
 
-      <!-- остальные пары/кейсы можешь оставить как у тебя ниже -->
-      <!-- ... -->
+   
     </div>
   </div>
 </section>
@@ -227,26 +226,25 @@
     <div class="contact-grid">
      
       <div class="card form-card">
-        <h3>Оставить заявку</h3>
-        <p class="card-sub">Заполните форму, и мы свяжемся с вами в течение 2х рабочих дней</p>
+        <h3 data-i18n="contact.form.title">Оставить заявку</h3>
+        <p class="card-sub" data-i18n="contact.form.subtitle">Заполните форму, и мы свяжемся с вами в течение 2х рабочих дней</p>
 
         <form class="lead-form" onsubmit="submitForm(event)">
           <div class="field two">
-            <input type="text" name="name" placeholder="Ваше имя" required>
-            <input type="tel" name="phone" placeholder="Телефон" required>
+            <input type="text" name="name" placeholder="Ваше имя" required data-i18n-placeholder="form.name">
+            <input type="tel" name="phone" placeholder="Телефон" required data-i18n-placeholder="form.phone">
           </div>
           <div class="field">
-            <input type="email" name="email" placeholder="Email" required>
+            <input type="email" name="email" placeholder="Email" required data-i18n-placeholder="form.email">
           </div>
           <div class="field">
-            <textarea name="message" placeholder="Опишите задачу..." rows="5"></textarea>
+            <textarea name="message" placeholder="Опишите задачу..." rows="5" data-i18n-placeholder="form.message"></textarea>
           </div>
 
-          <button type="submit" class="btn-primary">Отправить заявку</button>
+          <button type="submit" class="btn-primary" data-i18n="form.submit">Отправить заявку</button>
 
-          <p class="form-hint">
-            Нажимая на кнопку, вы даёте согласие на обработку персональных данных и соглашаетесь с
-            политикой конфиденциальности
+          <p class="form-hint" data-i18n="form.hint">
+            Нажимая на кнопку, вы даёте согласие на обработку персональных данных и соглашаетесь с политикой конфиденциальности
           </p>
         </form>
       </div>
@@ -255,13 +253,13 @@
       <div class="info-column">
         <!-- contacts -->
         <div class="card info-card">
-          <h3><i class="fa-solid fa-phone icon"></i> Связаться с нами</h3>
+          <h3><i class="fa-solid fa-phone icon"></i> <span data-i18n="contact.card.contact.title">Связаться с нами</span></h3>
 
           <div class="row">
             <i class="fa-solid fa-phone icon"></i>
             <div>
               <a href="tel:+37120888803" class="link-strong">+371 20888803</a>
-              <div class="muted">Основной номер</div>
+              <div class="muted" data-i18n="contact.card.phone.note">Основной номер</div>
             </div>
           </div>
 
@@ -269,52 +267,52 @@
             <i class="fa-solid fa-envelope icon"></i>
             <div>
               <a href="mailto:info@cleanlines.lv" class="link-strong">info@cleanlines.lv</a>
-              <div class="muted">Email для заявок</div>
+              <div class="muted" data-i18n="contact.card.email.note">Email для заявок</div>
             </div>
           </div>
 
           <div class="row">
             <i class="fa-solid fa-location-dot icon"></i>
             <div>
-              Цесвайнес 15A-211
-              <div class="muted">Рига, LV-1073, Латвия</div>
+              <span data-i18n="contact.card.address.street">Цесвайнес 15A-211</span>
+              <div class="muted" data-i18n="contact.card.address.city">Рига, LV-1073, Латвия</div>
             </div>
           </div>
         </div>
 
         
         <div class="card info-card">
-          <h3><i class="fa-solid fa-clock icon"></i> Рабочие часы</h3>
+          <h3><i class="fa-solid fa-clock icon"></i> <span data-i18n="contact.hours.title">Рабочие часы</span></h3>
 
           <div class="kv">
-            <span>Понедельник – Пятница:</span>
-            <strong>8:00 – 18:00</strong>
+            <span data-i18n="contact.hours.weekdays.label">Понедельник – Пятница:</span>
+            <strong data-i18n="contact.hours.weekdays.value">8:00 – 18:00</strong>
           </div>
           <div class="kv">
-            <span>Суббота:</span>
-            <strong>9:00 – 16:00</strong>
+            <span data-i18n="contact.hours.saturday.label">Суббота:</span>
+            <strong data-i18n="contact.hours.saturday.value">9:00 – 16:00</strong>
           </div>
           <div class="kv">
-            <span>Воскресенье:</span>
-            <span class="muted">Выходной</span>
+            <span data-i18n="contact.hours.sunday.label">Воскресенье:</span>
+            <span class="muted" data-i18n="contact.hours.sunday.value">Выходной</span>
           </div>
 
           <div class="badge">
-            <strong>Экстренные вызовы 24/7</strong>
-            <div class="muted">Для срочных случаев доступны круглосуточно</div>
+            <strong data-i18n="contact.hours.badge.title">Экстренные вызовы 24/7</strong>
+            <div class="muted" data-i18n="contact.hours.badge.note">Для срочных случаев доступны круглосуточно</div>
           </div>
         </div>
 
        
         <div class="card info-card">
-          <h3><i class="fa-solid fa-share-nodes icon"></i> Социальные сети</h3>
-          <p class="card-sub">Следите за нашими работами и получайте советы по уходу</p>
+          <h3><i class="fa-solid fa-share-nodes icon"></i> <span data-i18n="contact.socials.title">Социальные сети</span></h3>
+          <p class="card-sub" data-i18n="contact.socials.subtitle">Следите за нашими работами и получайте советы по уходу</p>
 
           <div class="socials">
-            <a class="btn-ghost" href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i> Facebook</a>
-            <a class="btn-ghost" href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i> Instagram</a>
+            <a class="btn-ghost" href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i> <span data-i18n="social.facebook">Facebook</span></a>
+            <a class="btn-ghost" href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i> <span data-i18n="social.instagram">Instagram</span></a>
             <a class="btn-wa" href="https://wa.me/37120888803" target="_blank" rel="noopener">
-              <i class="fa-brands fa-whatsapp"></i> WhatsApp
+              <i class="fa-brands fa-whatsapp"></i> <span data-i18n="social.whatsapp">WhatsApp</span>
             </a>
           </div>
         </div>
@@ -352,154 +350,7 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
- <script>
-(function(){
-  const wrap  = document.querySelector('.gallery-carousel');
-  const viewport = wrap?.querySelector('.gallery-viewport');
-  const track = document.getElementById('gcarTrack');
-  if(!wrap || !viewport || !track) return;
+         <script src="script.js"></script>
 
-  const prev = wrap.querySelector('.gcar-btn--prev');
-  const next = wrap.querySelector('.gcar-btn--next');
-  const dotsWrap = document.getElementById('gcarDots');
-
-  // === helpers
-  const gap = ()=> parseFloat(getComputedStyle(track).gap) || 0;
-  function slideWidth(){
-    const cs = getComputedStyle(viewport);
-    const pl = parseFloat(cs.paddingLeft) || 0;
-    const pr = parseFloat(cs.paddingRight) || 0;
-    return viewport.clientWidth - pl - pr;
-  }
-
-  
-  const originals = Array.from(track.children);
-  const firstClone = originals[0].cloneNode(true);
-  const lastClone  = originals[originals.length-1].cloneNode(true);
-  firstClone.classList.add('is-clone');
-  lastClone.classList.add('is-clone');
-
-  
-  track.prepend(lastClone);
-  track.append(firstClone);
-
-  let slides = Array.from(track.children);
-  const REAL_COUNT = originals.length;
-
-  
-  let index = 1;
-
-  // dots only for real slides
-  dotsWrap.innerHTML = '';
-  for(let i=0;i<REAL_COUNT;i++){
-    const b = document.createElement('button');
-    b.addEventListener('click', ()=>{ index = i+1; goTo(index, true); restartAutoplay(); });
-    dotsWrap.appendChild(b);
-  }
-
-  function setActiveDot(){
-    const realIdx = (index-1 + REAL_COUNT) % REAL_COUNT; // 0..REAL_COUNT-1
-    dotsWrap.querySelectorAll('button').forEach((d,i)=> d.classList.toggle('is-active', i===realIdx));
-  }
-
-  function setCenterClass(){
-    slides.forEach((el,i)=> el.classList.toggle('is-center', i===index));
-  }
-
-  function translateByIndex(animate=true){
-    const w = slideWidth();
-    const tx = -(index * (w + gap()));
-    if(!animate){
-      const old = getComputedStyle(track).transition;
-      track.style.transition = 'none';
-      track.style.transform  = `translateX(${tx}px)`;
-      
-      track.offsetHeight;
-      track.style.transition = old;
-    }else{
-      track.style.transform  = `translateX(${tx}px)`;
-    }
-    setCenterClass(); setActiveDot();
-  }
-
-  function goTo(i, animate=true){
-    index = i;
-    translateByIndex(animate);
-  }
-
-  // snap back seamlessly when we hit clones
-  track.addEventListener('transitionend', ()=>{
-    if(slides[index].classList.contains('is-clone')){
-      if(index === 0){               
-        index = REAL_COUNT;        
-      }else if(index === slides.length-1){ 
-        index = 1;
-      }
-      translateByIndex(false);       
-    }
-  });
-
-  // controls
-  prev.addEventListener('click', ()=>{ index--; goTo(index, true); restartAutoplay(); });
-  next.addEventListener('click', ()=>{ index++; goTo(index, true); restartAutoplay(); });
-
-  // autoplay
-  let autoplayTimer = null;
-  function startAutoplay(){
-    stopAutoplay();
-    autoplayTimer = setInterval(()=>{ index++; goTo(index, true); }, 3200);
-  }
-  function stopAutoplay(){ if(autoplayTimer){ clearInterval(autoplayTimer); autoplayTimer=null; } }
-  function restartAutoplay(){ stopAutoplay(); startAutoplay(); }
-  wrap.addEventListener('mouseenter', stopAutoplay);
-  wrap.addEventListener('mouseleave', startAutoplay);
-  wrap.addEventListener('focusin', stopAutoplay);
-  wrap.addEventListener('focusout', startAutoplay);
-
-  // swipe
-  let startX=null, startTx=0;
-  track.addEventListener('pointerdown', (e)=>{
-    if(e.pointerType==='mouse') return;
-    startX = e.clientX; startTx = currentTx();
-    track.style.transition = 'none';
-    track.setPointerCapture(e.pointerId);
-    stopAutoplay();
-  });
-  track.addEventListener('pointermove', (e)=>{
-    if(startX===null) return;
-    const dx = e.clientX - startX;
-    track.style.transform = `translateX(${startTx + dx}px)`;
-  });
-  ['pointerup','pointercancel','pointerleave'].forEach(ev=>{
-    track.addEventListener(ev, (e)=>{
-      if(startX===null) return;
-      const dx = e.clientX - startX;
-      const thr = 50;
-      track.style.transition = ''; // restore
-      if(Math.abs(dx) > thr){
-        if(dx < 0) index++; else index--;
-        goTo(index, true);
-      }else{
-        goTo(index, true);
-      }
-      startX=null;
-      startAutoplay();
-    });
-  });
-
-  function currentTx(){
-    const m = new DOMMatrixReadOnly(getComputedStyle(track).transform);
-    return m.m41;
-  }
-
-  // keep layout stable
-  window.addEventListener('resize', ()=> translateByIndex(false));
-
-  // init
-  translateByIndex(false);
-  startAutoplay();
-})();
-</script>
 </body>
 </html>

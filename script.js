@@ -1,328 +1,170 @@
-// Global variables
+
+// =============== Ваш предыдущий код галереи (оставлен без урезаний) ===============
+(function(){
+  const wrap  = document.querySelector('.gallery-carousel');
+  const viewport = wrap?.querySelector('.gallery-viewport');
+  const track = document.getElementById('gcarTrack');
+  if(!wrap || !viewport || !track) return;
+
+  const prev = wrap.querySelector('.gcar-btn--prev');
+  const next = wrap.querySelector('.gcar-btn--next');
+  const dotsWrap = document.getElementById('gcarDots');
+
+  // === helpers
+  const gap = ()=> parseFloat(getComputedStyle(track).gap) || 0;
+  function slideWidth(){
+    const cs = getComputedStyle(viewport);
+    const pl = parseFloat(cs.paddingLeft) || 0;
+    const pr = parseFloat(cs.paddingRight) || 0;
+    return viewport.clientWidth - pl - pr;
+  }
+
+  
+  const originals = Array.from(track.children);
+  const firstClone = originals[0].cloneNode(true);
+  const lastClone  = originals[originals.length-1].cloneNode(true);
+  firstClone.classList.add('is-clone');
+  lastClone.classList.add('is-clone');
+
+  
+  track.prepend(lastClone);
+  track.append(firstClone);
+
+  let slides = Array.from(track.children);
+  const REAL_COUNT = originals.length;
+
+  
+  let index = 1;
+
+  // dots only for real slides
+  dotsWrap.innerHTML = '';
+  for(let i=0;i<REAL_COUNT;i++){
+    const b = document.createElement('button');
+    b.addEventListener('click', ()=>{ index = i+1; goTo(index, true); restartAutoplay(); });
+    dotsWrap.appendChild(b);
+  }
+
+  function setActiveDot(){
+    const realIdx = (index-1 + REAL_COUNT) % REAL_COUNT; // 0..REAL_COUNT-1
+    dotsWrap.querySelectorAll('button').forEach((d,i)=> d.classList.toggle('is-active', i===realIdx));
+  }
+
+  function setCenterClass(){
+    slides.forEach((el,i)=> el.classList.toggle('is-center', i===index));
+  }
+
+  function translateByIndex(animate=true){
+    const w = slideWidth();
+    const tx = -(index * (w + gap()));
+    if(!animate){
+      const old = getComputedStyle(track).transition;
+      track.style.transition = 'none';
+      track.style.transform  = `translateX(${tx}px)`;
+      
+      track.offsetHeight;
+      track.style.transition = old;
+    }else{
+      track.style.transform  = `translateX(${tx}px)`;
+    }
+    setCenterClass(); setActiveDot();
+  }
+
+  function goTo(i, animate=true){
+    index = i;
+    translateByIndex(animate);
+  }
+
+  // snap back seamlessly when we hit clones
+  track.addEventListener('transitionend', ()=>{
+    if(slides[index].classList.contains('is-clone')){
+      if(index === 0){               
+        index = REAL_COUNT;        
+      }else if(index === slides.length-1){ 
+        index = 1;
+      }
+      translateByIndex(false);       
+    }
+  });
+
+  // controls
+  prev.addEventListener('click', ()=>{ index--; goTo(index, true); restartAutoplay(); });
+  next.addEventListener('click', ()=>{ index++; goTo(index, true); restartAutoplay(); });
+
+  // autoplay
+  let autoplayTimer = null;
+  function startAutoplay(){
+    stopAutoplay();
+    autoplayTimer = setInterval(()=>{ index++; goTo(index, true); }, 3200);
+  }
+  function stopAutoplay(){ if(autoplayTimer){ clearInterval(autoplayTimer); autoplayTimer=null; } }
+  function restartAutoplay(){ stopAutoplay(); startAutoplay(); }
+  wrap.addEventListener('mouseenter', stopAutoplay);
+  wrap.addEventListener('mouseleave', startAutoplay);
+  wrap.addEventListener('focusin', stopAutoplay);
+  wrap.addEventListener('focusout', startAutoplay);
+
+  // swipe
+  let startX=null, startTx=0;
+  track.addEventListener('pointerdown', (e)=>{
+    if(e.pointerType==='mouse') return;
+    startX = e.clientX; startTx = currentTx();
+    track.style.transition = 'none';
+    track.setPointerCapture(e.pointerId);
+    stopAutoplay();
+  });
+  track.addEventListener('pointermove', (e)=>{
+    if(startX===null) return;
+    const dx = e.clientX - startX;
+    track.style.transform = `translateX(${startTx + dx}px)`;
+  });
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>{
+    track.addEventListener(ev, (e)=>{
+      if(startX===null) return;
+      const dx = e.clientX - startX;
+      const thr = 50;
+      track.style.transition = ''; // restore
+      if(Math.abs(dx) > thr){
+        if(dx < 0) index++; else index--;
+        goTo(index, true);
+      }else{
+        goTo(index, true);
+      }
+      startX=null;
+      startAutoplay();
+    });
+  });
+
+  function currentTx(){
+    const m = new DOMMatrixReadOnly(getComputedStyle(track).transform);
+    return m.m41;
+  }
+
+  // keep layout stable
+  window.addEventListener('resize', ()=> translateByIndex(false));
+
+  // init
+  translateByIndex(false);
+  startAutoplay();
+})();
+
+
+// ==================== Ваш функционал слайдера услуг (с безопасными проверками) ====================
 let currentSlide = 0;
 const totalSlides = 13;
 let currentLanguage = 'ru';
 
-// Translations object
-const translations = {
-    ru: {
-        'brand': 'City Wall Clean',
-        'nav.services': 'Услуги',
-        'nav.equipment': 'Оборудование', 
-        'nav.gallery': 'Галерея',
-        'nav.contact': 'Контакты',
-        'order.cleaning': 'Заказать очистку',
-        'hero.title': 'Профессиональное удаление граффити и очистка фасадов',
-        'hero.subtitle': 'Используем экологически безопасные технологии и современное оборудование для качественной очистки любых поверхностей',
-        'hero.cta': 'Заказать очистку',
-        'services.title': 'Наши услуги',
-        'services.subtitle': 'Профессиональные услуги по очистке любых поверхностей с использованием современного оборудования',
-        'services.facade.title': 'Мойка фасадов',
-        'services.facade.price': 'от 3 €/м²',
-        'services.facade.description': 'Профессиональная мойка фасадов зданий от различных загрязнений',
-        'services.facade.feature1': 'Безопасные химикаты',
-        'services.facade.feature2': 'Высокое давление',
-        'services.facade.feature3': 'Любая высота',
-        'services.graffiti.title': 'Удаление граффити',
-        'services.graffiti.price': 'от 30 €/м²',
-        'services.graffiti.description': 'Удаление граффити с фасадов зданий - основное направление нашей компании',
-        'services.graffiti.feature1': 'Любые поверхности',
-        'services.graffiti.feature2': 'Без повреждений',
-        'services.graffiti.feature3': 'Быстро и качественно',
-        'services.pavement.title': 'Очистка брусчатки',
-        'services.pavement.price': 'от 2,80 €/м²',
-        'services.pavement.description': 'Очистка брусчатки с технологией DANSAND',
-        'services.pavement.feature1': 'Технология DANSAND',
-        'services.pavement.feature2': 'Защита от сорняков',
-        'services.pavement.feature3': 'Долговременный эффект',
-        'services.ticks.title': 'Обработка от клещей',
-        'services.ticks.price': '0,3 €/м²',
-        'services.ticks.description': 'Профессиональная обработка территорий от клещей',
-        'services.train.title': 'Очистка подвижного состава',
-        'services.train.price': 'от 720 €/шт',
-        'services.train.description': 'Удаление граффити с железнодорожных вагонов',
-        'services.marking.title': 'Удаление разметки',
-        'services.marking.price': '65 €/час',
-        'services.marking.description': 'Удаление напольной разметки в складах и стоянках',
-        'services.floors.title': 'Очистка полов',
-        'services.floors.price': 'от 25 €/м²',
-        'services.floors.description': 'Очистка плиточных швов с помощью Tornado ACS',
-        'services.allergy.title': 'Антиаллергенная уборка',
-        'services.allergy.price': 'от 350 €',
-        'services.allergy.description': 'Комплексная защита от пыли, клещей, плесени',
-        'services.fire.title': 'Очистка после пожара',
-        'services.fire.price': 'от 50 €/м²',
-        'services.fire.description': 'Полная очистка помещений после пожара',
-        'services.roof.title': 'Очистка крыш',
-        'services.roof.price': 'от 3,5 €/м²',
-        'services.roof.description': 'Профессиональная очистка кровли',
-        'services.terrace.title': 'Гидроизоляция террас',
-        'services.terrace.price': 'от 30 €/м²',
-        'services.terrace.description': 'Гидроизоляция и декорирование террас и балконов',
-        'services.sandblast.title': 'Водно-пескоструйная очистка',
-        'services.sandblast.price': 'от 250 €/м²',
-        'services.sandblast.description': 'Очистка металлических конструкций от краски и ржавчины',
-        'services.protection.title': 'Защита фасадов',
-        'services.protection.price': 'от 15 €/м²',
-        'services.protection.description': 'Нанесение защитных покрытий на фасады зданий',
-        'services.industrial.title': 'Промышленная очистка',
-        'services.industrial.price': 'по запросу',
-        'services.industrial.description': 'Очистка промышленного оборудования и территорий',
-        'services.emergency.title': 'Экстренная очистка',
-        'services.emergency.price': 'круглосуточно',
-        'services.emergency.description': 'Срочное удаление загрязнений 24/7',
-        'equipment.title': 'Наше оборудование',
-        'equipment.subtitle': 'Используем современное профессиональное оборудование для достижения лучших результатов',
-        'equipment.tornado.title': 'Tornado ACS',
-        'equipment.tornado.description': 'Мощная система очистки высоким давлением для удаления самых сложных загрязнений',
-        'equipment.tornado.feature1': 'Давление до 200 бар',
-        'equipment.tornado.feature2': 'Нагрев воды до 150°C',
-        'equipment.tornado.feature3': 'Экологически безопасно',
-        'equipment.dansand.title': 'Технология DANSAND',
-        'equipment.dansand.description': 'Уникальная датская технология для очистки и защиты брусчатки',
-        'equipment.dansand.feature1': 'Официальный представитель в Балтии',
-        'equipment.dansand.feature2': 'Долговременная защита',
-        'equipment.dansand.feature3': 'Экологически чистые материалы',
-        'stats.projects': 'объектов',
-        'stats.experience': 'лет опыта',
-        'stats.warranty': 'год гарантии',
-        'stats.support': 'поддержка',
-        'gallery.title': 'Наши работы',
-        'gallery.subtitle': 'Примеры выполненных работ - до и после очистки',
-        'gallery.before': 'ДО',
-        'gallery.after': 'ПОСЛЕ',
-        'contact.title': 'Свяжитесь с нами',
-        'contact.subtitle': 'Получите бесплатную консультацию и расчет стоимости работ',
-        'contact.phone': 'Телефон',
-        'contact.email': 'Email',
-        'contact.address': 'Адрес',
-        'contact.address.value': 'Рига, Латвия',
-        'contact.hours': 'Время работы',
-        'contact.hours.value': 'Пн-Пт: 8:00-18:00<br>Сб-Вс: по договоренности',
-        'form.name': 'Ваше имя',
-        'form.phone': 'Телефон',
-        'form.email': 'Email',
-        'form.message': 'Описание работ',
-        'form.submit': 'Отправить заявку',
-        'footer.copyright': '© 2024 City Wall Clean. Все права защищены. Профессиональная очистка в Латвии.'
-    },
-    lv: {
-        'brand': 'City Wall Clean',
-        'nav.services': 'Pakalpojumi',
-        'nav.equipment': 'Aprīkojums',
-        'nav.gallery': 'Galerija',
-        'nav.contact': 'Kontakti',
-        'order.cleaning': 'Pasūtīt tīrīšanu',
-        'hero.title': 'Profesionāla grafiti noņemšana un fasāžu tīrīšana',
-        'hero.subtitle': 'Izmantojam ekoloģiski drošas tehnoloģijas un modernu aprīkojumu kvalitatīvai jebkuru virsmu tīrīšanai',
-        'hero.cta': 'Pasūtīt tīrīšanu',
-        'services.title': 'Mūsu pakalpojumi',
-        'services.subtitle': 'Profesionāli tīrīšanas pakalpojumi jebkurām virsmām, izmantojot modernu aprīkojumu',
-        'services.facade.title': 'Fasāžu mazgāšana',
-        'services.facade.price': 'no 3 €/m²',
-        'services.facade.description': 'Profesionāla ēku fasāžu mazgāšana no dažādiem piesārņojumiem',
-        'services.facade.feature1': 'Drošas ķimikālijas',
-        'services.facade.feature2': 'Augsts spiediens',
-        'services.facade.feature3': 'Jebkurš augstums',
-        'services.graffiti.title': 'Grafiti noņemšana',
-        'services.graffiti.price': 'no 30 €/m²',
-        'services.graffiti.description': 'Grafiti noņemšana no ēku fasādēm - mūsu uzņēmuma galvenais virziens',
-        'services.graffiti.feature1': 'Jebkuras virsmas',
-        'services.graffiti.feature2': 'Bez bojājumiem',
-        'services.graffiti.feature3': 'Ātri un kvalitatīvi',
-        'services.pavement.title': 'Bruģakmens tīrīšana',
-        'services.pavement.price': 'no 2,80 €/m²',
-        'services.pavement.description': 'Bruģakmens tīrīšana ar DANSAND tehnoloģiju',
-        'services.pavement.feature1': 'DANSAND tehnoloģija',
-        'services.pavement.feature2': 'Aizsardzība pret nezālēm',
-        'services.pavement.feature3': 'Ilgstošs efekts',
-        'services.ticks.title': 'Apstrāde pret ērcēm',
-        'services.ticks.price': '0,3 €/m²',
-        'services.ticks.description': 'Profesionāla teritoriju apstrāde pret ērcēm',
-        'services.train.title': 'Ritošā sastāva tīrīšana',
-        'services.train.price': 'no 720 €/gab.',
-        'services.train.description': 'Grafiti noņemšana no dzelzceļa vagoniem',
-        'services.marking.title': 'Marķējuma noņemšana',
-        'services.marking.price': '65 €/st.',
-        'services.marking.description': 'Grīdas marķējuma noņemšana noliktavās un stāvvietās',
-        'services.floors.title': 'Grīdu tīrīšana',
-        'services.floors.price': 'no 25 €/m²',
-        'services.floors.description': 'Flīžu šuvju tīrīšana ar Tornado ACS',
-        'services.allergy.title': 'Antialerģiska uzkopšana',
-        'services.allergy.price': 'no 350 €',
-        'services.allergy.description': 'Kompleksa aizsardzība pret putekļiem, ērcēm, pelējumu',
-        'services.fire.title': 'Tīrīšana pēc ugunsgrēka',
-        'services.fire.price': 'no 50 €/m²',
-        'services.fire.description': 'Pilnīga telpu tīrīšana pēc ugunsgrēka',
-        'services.roof.title': 'Jumtu tīrīšana',
-        'services.roof.price': 'no 3,5 €/m²',
-        'services.roof.description': 'Profesionāla jumta seguma tīrīšana',
-        'services.terrace.title': 'Terasu hidroizolācija',
-        'services.terrace.price': 'no 30 €/m²',
-        'services.terrace.description': 'Terasu un balkonu hidroizolācija un dekorēšana',
-        'services.sandblast.title': 'Ūdens-smilšstrūklas tīrīšana',
-        'services.sandblast.price': 'no 250 €/m²',
-        'services.sandblast.description': 'Metāla konstrukciju tīrīšana no krāsas un rūsas',
-        'services.protection.title': 'Fasāžu aizsardzība',
-        'services.protection.price': 'no 15 €/m²',
-        'services.protection.description': 'Aizsargājošo pārklājumu uzklāšana uz ēku fasādēm',
-        'services.industrial.title': 'Rūpnieciska tīrīšana',
-        'services.industrial.price': 'pēc pieprasījuma',
-        'services.industrial.description': 'Rūpnieciskā aprīkojuma un teritoriju tīrīšana',
-        'services.emergency.title': 'Ārkārtas tīrīšana',
-        'services.emergency.price': 'diennakti',
-        'services.emergency.description': 'Steidzama piesārņojuma noņemšana 24/7',
-        'equipment.title': 'Mūsu aprīkojums',
-        'equipment.subtitle': 'Izmantojam modernu profesionālu aprīkojumu labāko rezultātu sasniegšanai',
-        'equipment.tornado.title': 'Tornado ACS',
-        'equipment.tornado.description': 'Jaudīga augsta spiediena tīrīšanas sistēma sarežģītāko piesārņojumu noņemšanai',
-        'equipment.tornado.feature1': 'Spiediens līdz 200 bar',
-        'equipment.tornado.feature2': 'Ūdens sildīšana līdz 150°C',
-        'equipment.tornado.feature3': 'Ekoloģiski drošs',
-        'equipment.dansand.title': 'DANSAND tehnoloģija',
-        'equipment.dansand.description': 'Unikāla dāņu tehnoloģija bruģakmens tīrīšanai un aizsardzībai',
-        'equipment.dansand.feature1': 'Oficiālais pārstāvis Baltijā',
-        'equipment.dansand.feature2': 'Ilgtermiņa aizsardzība',
-        'equipment.dansand.feature3': 'Ekoloģiski tīri materiāli',
-        'stats.projects': 'objekti',
-        'stats.experience': 'gadu pieredze',
-        'stats.warranty': 'gada garantija',
-        'stats.support': 'atbalsts',
-        'gallery.title': 'Mūsu darbi',
-        'gallery.subtitle': 'Izpildīto darbu piemēri - pirms un pēc tīrīšanas',
-        'gallery.before': 'PIRMS',
-        'gallery.after': 'PĒC',
-        'contact.title': 'Sazinieties ar mums',
-        'contact.subtitle': 'Saņemiet bezmaksas konsultāciju un darbu izmaksu aprēķinu',
-        'contact.phone': 'Tālrunis',
-        'contact.email': 'E-pasts',
-        'contact.address': 'Adrese',
-        'contact.address.value': 'Rīga, Latvija',
-        'contact.hours': 'Darba laiks',
-        'contact.hours.value': 'P-Pt: 8:00-18:00<br>S-Sv: pēc vienošanās',
-        'form.name': 'Jūsu vārds',
-        'form.phone': 'Tālrunis',
-        'form.email': 'E-pasts',
-        'form.message': 'Darbu apraksts',
-        'form.submit': 'Nosūtīt pieteikumu',
-        'footer.copyright': '© 2024 City Wall Clean. Visas tiesības aizsargātas. Profesionāla tīrīšana Latvijā.'
-    },
-    en: {
-        'brand': 'City Wall Clean',
-        'nav.services': 'Services',
-        'nav.equipment': 'Equipment',
-        'nav.gallery': 'Gallery',
-        'nav.contact': 'Contact',
-        'order.cleaning': 'Order Cleaning',
-        'hero.title': 'Professional Graffiti Removal and Facade Cleaning',
-        'hero.subtitle': 'We use environmentally safe technologies and modern equipment for quality cleaning of any surfaces',
-        'hero.cta': 'Order Cleaning',
-        'services.title': 'Our Services',
-        'services.subtitle': 'Professional cleaning services for any surfaces using modern equipment',
-        'services.facade.title': 'Facade Washing',
-        'services.facade.price': 'from €3/m²',
-        'services.facade.description': 'Professional building facade washing from various contaminants',
-        'services.facade.feature1': 'Safe chemicals',
-        'services.facade.feature2': 'High pressure',
-        'services.facade.feature3': 'Any height',
-        'services.graffiti.title': 'Graffiti Removal',
-        'services.graffiti.price': 'from €30/m²',
-        'services.graffiti.description': 'Graffiti removal from building facades - our company\'s main direction',
-        'services.graffiti.feature1': 'Any surfaces',
-        'services.graffiti.feature2': 'No damage',
-        'services.graffiti.feature3': 'Fast and quality',
-        'services.pavement.title': 'Paving Stone Cleaning',
-        'services.pavement.price': 'from €2.80/m²',
-        'services.pavement.description': 'Paving stone cleaning with DANSAND technology',
-        'services.pavement.feature1': 'DANSAND technology',
-        'services.pavement.feature2': 'Weed protection',
-        'services.pavement.feature3': 'Long-lasting effect',
-        'services.ticks.title': 'Tick Treatment',
-        'services.ticks.price': '€0.3/m²',
-        'services.ticks.description': 'Professional territory treatment against ticks',
-        'services.train.title': 'Rolling Stock Cleaning',
-        'services.train.price': 'from €720/pc',
-        'services.train.description': 'Graffiti removal from railway cars',
-        'services.marking.title': 'Marking Removal',
-        'services.marking.price': '€65/hour',
-        'services.marking.description': 'Floor marking removal in warehouses and parking lots',
-        'services.floors.title': 'Floor Cleaning',
-        'services.floors.price': 'from €25/m²',
-        'services.floors.description': 'Tile joint cleaning with Tornado ACS',
-        'services.allergy.title': 'Anti-allergenic Cleaning',
-        'services.allergy.price': 'from €350',
-        'services.allergy.description': 'Comprehensive protection against dust, ticks, mold',
-        'services.fire.title': 'Fire Damage Cleaning',
-        'services.fire.price': 'from €50/m²',
-        'services.fire.description': 'Complete room cleaning after fire',
-        'services.roof.title': 'Roof Cleaning',
-        'services.roof.price': 'from €3.5/m²',
-        'services.roof.description': 'Professional roof covering cleaning',
-        'services.terrace.title': 'Terrace Waterproofing',
-        'services.terrace.price': 'from €30/m²',
-        'services.terrace.description': 'Waterproofing and decorating terraces and balconies',
-        'services.sandblast.title': 'Water-sandblasting Cleaning',
-        'services.sandblast.price': 'from €250/m²',
-        'services.sandblast.description': 'Metal structure cleaning from paint and rust',
-        'services.protection.title': 'Facade Protection',
-        'services.protection.price': 'from €15/m²',
-        'services.protection.description': 'Protective coating application on building facades',
-        'services.industrial.title': 'Industrial Cleaning',
-        'services.industrial.price': 'on request',
-        'services.industrial.description': 'Industrial equipment and territory cleaning',
-        'services.emergency.title': 'Emergency Cleaning',
-        'services.emergency.price': '24/7',
-        'services.emergency.description': 'Urgent contamination removal 24/7',
-        'equipment.title': 'Our Equipment',
-        'equipment.subtitle': 'We use modern professional equipment to achieve the best results',
-        'equipment.tornado.title': 'Tornado ACS',
-        'equipment.tornado.description': 'Powerful high-pressure cleaning system for removing the most complex contamination',
-        'equipment.tornado.feature1': 'Pressure up to 200 bar',
-        'equipment.tornado.feature2': 'Water heating up to 150°C',
-        'equipment.tornado.feature3': 'Environmentally safe',
-        'equipment.dansand.title': 'DANSAND Technology',
-        'equipment.dansand.description': 'Unique Danish technology for paving stone cleaning and protection',
-        'equipment.dansand.feature1': 'Official representative in the Baltics',
-        'equipment.dansand.feature2': 'Long-term protection',
-        'equipment.dansand.feature3': 'Environmentally clean materials',
-        'stats.projects': 'projects',
-        'stats.experience': 'years experience',
-        'stats.warranty': 'year warranty',
-        'stats.support': 'support',
-        'gallery.title': 'Our Work',
-        'gallery.subtitle': 'Examples of completed work - before and after cleaning',
-        'gallery.before': 'BEFORE',
-        'gallery.after': 'AFTER',
-        'contact.title': 'Contact Us',
-        'contact.subtitle': 'Get free consultation and work cost calculation',
-        'contact.phone': 'Phone',
-        'contact.email': 'Email',
-        'contact.address': 'Address',
-        'contact.address.value': 'Riga, Latvia',
-        'contact.hours': 'Working hours',
-        'contact.hours.value': 'Mon-Fri: 8:00-18:00<br>Sat-Sun: by appointment',
-        'form.name': 'Your name',
-        'form.phone': 'Phone',
-        'form.email': 'Email',
-        'form.message': 'Work description',
-        'form.submit': 'Send request',
-        'footer.copyright': '© 2024 City Wall Clean. All rights reserved. Professional cleaning in Latvia.'
-    }
-};
-
-// Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
     initializeCarousel();
     initializeLanguage();
     initializeGallery();
 });
 
-// Carousel functionality
 function initializeCarousel() {
     const carousel = document.getElementById('servicesCarousel');
     const dotsContainer = document.getElementById('carouselDots');
+
+    if(!carousel || !dotsContainer){ return; } // защищаемся, если этого блока нет на странице
     
-    // Create dots
     for (let i = 0; i < totalSlides; i++) {
         const dot = document.createElement('div');
         dot.className = 'dot';
@@ -330,23 +172,26 @@ function initializeCarousel() {
         dot.addEventListener('click', () => goToSlide(i));
         dotsContainer.appendChild(dot);
     }
-    
     updateCarousel();
 }
 
 function moveCarousel(direction) {
+    const carousel = document.getElementById('servicesCarousel');
+    if(!carousel) return;
+
     currentSlide += direction;
-    
     if (currentSlide < 0) {
-        currentSlide = totalSlides - 3; // Show last 3 slides
+        currentSlide = totalSlides - 3;
     } else if (currentSlide > totalSlides - 3) {
-        currentSlide = 0; // Reset to beginning
+        currentSlide = 0;
     }
-    
     updateCarousel();
 }
 
 function goToSlide(slideIndex) {
+    const carousel = document.getElementById('servicesCarousel');
+    if(!carousel) return;
+
     currentSlide = slideIndex;
     if (currentSlide > totalSlides - 3) {
         currentSlide = totalSlides - 3;
@@ -356,17 +201,271 @@ function goToSlide(slideIndex) {
 
 function updateCarousel() {
     const carousel = document.getElementById('servicesCarousel');
-    const translateX = -currentSlide * (350 + 20); // card width + gap
+    if(!carousel) return;
+
+    const translateX = -currentSlide * (350 + 20);
     carousel.style.transform = `translateX(${translateX}px)`;
     
-    // Update dots
     const dots = document.querySelectorAll('.dot');
     dots.forEach((dot, index) => {
         dot.classList.toggle('active', index >= currentSlide && index < currentSlide + 3);
     });
 }
 
-// Language functionality
+// ========================== Переводы (RU, KA, EN) ==========================
+const translations = {
+  ru: {
+    'brand': 'City Wall Clean',
+    'nav.services': 'Услуги',
+    'nav.equipment': 'Оборудование', 
+    'nav.gallery': 'Галерея',
+    'nav.contact': 'Контакты',
+    'order.cleaning': 'Заказать очистку',
+    'hero.title': 'Профессиональное удаление граффити и очистка фасадов',
+    'hero.subtitle': 'Используем экологически безопасные технологии и современное оборудование для качественной очистки любых поверхностей',
+    'hero.cta': 'Заказать очистку',
+    'services.title': 'Наши услуги',
+    'services.subtitle': 'Профессиональная очистка поверхностей без воды, без химии, без высокого давления',
+    'services.facade.title': 'Очистка фасадов',
+    'services.facade.price': 'от 80-150₾/м²',
+    'services.facade.description': 'Комплексная мойка и восстановление фасадов: удаляем грязь, налёт и следы времени. Подходит для кирпича, камня, плитки, бетона.',
+    'services.facade.feature1': 'Деликатно к материалу',
+    'services.facade.feature2': 'Продлевает срок службы',
+    'services.facade.feature3': 'Чисто без отходов',
+    'services.graffiti.title': 'Очистка граффити',
+    'services.graffiti.price': 'от 80-150₾/м²',
+    'services.graffiti.description': 'Устранение граффити со стен дома быстро и бережно. Запатентованная система Tornado ACS удаляет стойкие загрязнения без повреждения основы.',
+    'services.graffiti.feature1': 'Без воды и химии',
+    'services.graffiti.feature2': 'Без высокого давления',
+    'services.graffiti.feature3': 'Работа круглый год',
+
+    'equipment.title': 'Оборудование Tornado ACS',
+    'equipment.subtitle': 'Вакуумная абразивная очистка: без воды, без химии, без высокого давления',
+    'equipment.card.title': 'Удаление граффити и восстановление поверхностей',
+    'equipment.card.text': 'С помощью очистительной техники Tornado ACS граффити удаляются со стен дома быстро и легко. Запатентованная система systeco работает в режиме замкнутого цикла — отходы не попадают наружу.',
+    'equipment.feature1': 'Без высокого давления, без воды и без химических веществ',
+    'equipment.feature2': 'Бережно к поверхности и экологично',
+    'equipment.feature3': 'Компактно, требуется только питание 220В',
+    'equipment.feature4': 'Эффективно даже в холодное время года',
+    'equipment.feature5': 'Подходит для плитки, полов, реставрации памятников, удаления сажи после пожаров',
+
+    'gallery.title': 'Наши работы',
+    'gallery.subtitle': 'Примеры выполненных работ',
+    'gallery.before': 'ДО',
+    'gallery.after': 'ПОСЛЕ',
+    'gallery.carousel.aria': 'Как мы работаем',
+
+    'contact.title': 'Свяжитесь с нами',
+    'contact.subtitle': 'Получите бесплатную консультацию и расчет стоимости работ',
+    'contact.form.title': 'Оставить заявку',
+    'contact.form.subtitle': 'Заполните форму, и мы свяжемся с вами в течение 2х рабочих дней',
+    'form.name': 'Ваше имя',
+    'form.phone': 'Телефон',
+    'form.email': 'Email',
+    'form.message': 'Опишите задачу...',
+    'form.submit': 'Отправить заявку',
+    'form.hint': 'Нажимая на кнопку, вы даёте согласие на обработку персональных данных и соглашаетесь с политикой конфиденциальности',
+    'form.success': 'Спасибо! Ваша заявка отправлена.',
+
+    'contact.card.contact.title': 'Связаться с нами',
+    'contact.card.phone.note': 'Основной номер',
+    'contact.card.email.note': 'Email для заявок',
+    'contact.card.address.street': 'Цесвайнес 15A-211',
+    'contact.card.address.city': 'Рига, LV-1073, Латвия',
+
+    'contact.hours.title': 'Рабочие часы',
+    'contact.hours.weekdays.label': 'Понедельник – Пятница:',
+    'contact.hours.weekdays.value': '8:00 – 18:00',
+    'contact.hours.saturday.label': 'Суббота:',
+    'contact.hours.saturday.value': '9:00 – 16:00',
+    'contact.hours.sunday.label': 'Воскресенье:',
+    'contact.hours.sunday.value': 'Выходной',
+    'contact.hours.badge.title': 'Экстренные вызовы 24/7',
+    'contact.hours.badge.note': 'Для срочных случаев доступны круглосуточно',
+
+    'contact.socials.title': 'Социальные сети',
+    'contact.socials.subtitle': 'Следите за нашими работами и получайте советы по уходу',
+    'social.facebook': 'Facebook',
+    'social.instagram': 'Instagram',
+    'social.whatsapp': 'WhatsApp',
+
+    'ui.prev': '‹',
+    'ui.next': '›',
+    'ui.call': 'Позвонить',
+    'ui.lang': 'Сменить язык',
+
+    'footer.copyright': '© 2024 City Wall Clean. Все права защищены. Профессиональная очистка в Латвии.'
+  },
+
+  ka: {
+    'brand': 'City Wall Clean',
+    'nav.services': 'სერვისები',
+    'nav.equipment': 'აღჭურვილობა',
+    'nav.gallery': 'გალერეა',
+    'nav.contact': 'კონტაქტი',
+    'order.cleaning': 'გასუფთავების შეკვეთა',
+    'hero.title': 'პროფესიონალური გრაფიტის მოცილება და ფასადის გაწმენდა',
+    'hero.subtitle': 'ჩვენ ვიყენებთ ეკოლოგიურად უსაფრთხო ტექნოლოგიებს და თანამედროვე აღჭურვილობას ნებისმიერი ზედაპირის ხარისხიანი გაწმენდისთვის',
+    'hero.cta': 'გასუფთავების შეკვეთა',
+    'services.title': 'ჩვენი სერვისები',
+    'services.subtitle': 'პროფესიონალური გაწმენდა წყლისა და ქიმიის გარეშე, დაბალი ზეწოლით',
+    'services.facade.title': 'ფასადების გაწმენდა',
+    'services.facade.price': '80-150₾/მ²',
+    'services.facade.description': 'ფასადების კომპლექსური რეცხვა და აღდგენა: ვაშორებთ ჭუჭყს, ნადებს და დროის კვალს. ვარგისია აგურისთვის, ქვისთვის, კაფელისთვის, ბეტონისთვის.',
+    'services.facade.feature1': 'დელიკატური მიმართვა მასალასთან',
+    'services.facade.feature2': 'служების ხანგრძლივობის ზრდა',
+    'services.facade.feature3': 'სისუფთავე ნარჩენების გარეშე',
+    'services.graffiti.title': 'გრაფიტის მოცილება',
+    'services.graffiti.price': '80-150₾/მ²',
+    'services.graffiti.description': 'გრაფიტის სწრაფი და ფრთხილი მოცილება. Tornado ACS სისტემა აშორებს მყარ დაბინძურებებს ზედაპირის დაზიანების გარეშე.',
+    'services.graffiti.feature1': 'გარეშე წყლისა და ქიმიის',
+    'services.graffiti.feature2': 'გარეშე მაღალი წნევის',
+    'services.graffiti.feature3': 'მუშაობა მთელი წლის განმავლობაში',
+
+    'equipment.title': 'Tornado ACS აღჭურვილობა',
+    'equipment.subtitle': 'ვაკუუმური აბრაზიული წმენდა: წყლის, ქიმიის და მაღალი წნევის გარეშე',
+    'equipment.card.title': 'გრაფიტის მოცილება და ზედაპირების აღდგენა',
+    'equipment.card.text': 'Tornado ACS-ის დახმარებით გრაფიტი კედლიდან სწრაფად და მარტივად იშორება. systeco-ს დაპატენტებული სისტემა მუშაობს დახურულ ციკლში — ნარჩენები გარეთ არ გადის.',
+    'equipment.feature1': 'უმაღლესი წნევის გარეშე, წყლისა და ქიმიის გარეშე',
+    'equipment.feature2': 'ზედაპირზე ფრთხილი და ეკოლოგიური',
+    'equipment.feature3': 'კომპაქტური, საჭიროა მხოლოდ 220V კვება',
+    'equipment.feature4': 'ეფექტური ცივ ამინდშიც',
+    'equipment.feature5': 'შესაფერისია კაფელისთვის, იატაკებისთვის, ძეგლების რესტავრაციისთვის, ხანძრის შემდეგ ჭვარტლის მოსაშორებლად',
+
+    'gallery.title': 'ჩვენი ნამუშევრები',
+    'gallery.subtitle': 'შესრულებული სამუშაოების მაგალითები',
+    'gallery.before': 'მდე',
+    'gallery.after': 'შემდეგ',
+    'gallery.carousel.aria': 'როგორ ვმუშაობთ',
+
+    'contact.title': 'დაგვიკავშირდით',
+    'contact.subtitle': 'მიიღეთ უფასო კონსულტაცია და ღირებულების დათვლა',
+    'contact.form.title': 'განაცხადის დატოვება',
+    'contact.form.subtitle': 'შეავსეთ ფორმა და 2 სამუშაო დღეში დაგიკავშირდებით',
+    'form.name': 'თქვენი სახელი',
+    'form.phone': 'ტელეფონი',
+    'form.email': 'ელ.ფოსტა',
+    'form.message': 'აღწერეთ zaა...',
+    'form.submit': 'გაგზავნა',
+    'form.hint': 'ღილაკზე დაჭერით თანხმდებით პერსონალური მონაცემების დამუშავებასა და კონფიდენციალურობის პოლიტიკას',
+    'form.success': 'გმადლობთ! თქვენი განაცხადი გაიგზავნა.',
+
+    'contact.card.contact.title': 'დაგვიკავშირდით',
+    'contact.card.phone.note': 'ძირითადი ნომერი',
+    'contact.card.email.note': 'ზარებისთვის ელ.ფოსტა',
+    'contact.card.address.street': 'ცესვაინეს 15A-211',
+    'contact.card.address.city': 'რიგა, LV-1073, ლატვია',
+
+    'contact.hours.title': 'სამუშაო საათები',
+    'contact.hours.weekdays.label': 'ორშაბათი – პარასკევი:',
+    'contact.hours.weekdays.value': '8:00 – 18:00',
+    'contact.hours.saturday.label': 'შაბათი:',
+    'contact.hours.saturday.value': '9:00 – 16:00',
+    'contact.hours.sunday.label': 'კვირა:',
+    'contact.hours.sunday.value': 'დასვენების დღე',
+    'contact.hours.badge.title': 'სასწრაფო გამოძახებები 24/7',
+    'contact.hours.badge.note': 'საგანგებო შემთხვევებისთვის — ნებისმიერი დრო',
+
+    'contact.socials.title': 'სოციალური ქსელები',
+    'contact.socials.subtitle': 'მიგვყევით და მიიღეთ მოვლის რჩევები',
+    'social.facebook': 'Facebook',
+    'social.instagram': 'Instagram',
+    'social.whatsapp': 'WhatsApp',
+
+    'ui.prev': '‹',
+    'ui.next': '›',
+    'ui.call': 'დარეკვა',
+    'ui.lang': 'ენის შეცვლა',
+
+    'footer.copyright': '© 2024 City Wall Clean. ყველა უფლება დაცულია. პროფესიონალური გაწმენდა ლატვიაში.'
+  },
+
+  en: {
+    'brand': 'City Wall Clean',
+    'nav.services': 'Services',
+    'nav.equipment': 'Equipment',
+    'nav.gallery': 'Gallery',
+    'nav.contact': 'Contact',
+    'order.cleaning': 'Order Cleaning',
+    'hero.title': 'Professional Graffiti Removal and Facade Cleaning',
+    'hero.subtitle': 'We use environmentally safe technologies and modern equipment for quality cleaning of any surfaces',
+    'hero.cta': 'Order Cleaning',
+    'services.title': 'Our Services',
+    'services.subtitle': 'Professional surface cleaning without water, chemicals, or high pressure',
+    'services.facade.title': 'Facade Cleaning',
+    'services.facade.price': 'from 80-150₾/m²',
+    'services.facade.description': 'Full facade washing and restoration: we remove dirt, deposits and signs of time. Suitable for brick, stone, tile, concrete.',
+    'services.facade.feature1': 'Gentle to material',
+    'services.facade.feature2': 'Extends lifespan',
+    'services.facade.feature3': 'Clean with no waste',
+    'services.graffiti.title': 'Graffiti Removal',
+    'services.graffiti.price': 'from 80-150₾/m²',
+    'services.graffiti.description': 'Fast and careful removal of graffiti. The patented Tornado ACS system removes stubborn dirt without damaging the base.',
+    'services.graffiti.feature1': 'No water or chemicals',
+    'services.graffiti.feature2': 'No high pressure',
+    'services.graffiti.feature3': 'Year-round work',
+
+    'equipment.title': 'Tornado ACS Equipment',
+    'equipment.subtitle': 'Vacuum abrasive cleaning: no water, no chemicals, no high pressure',
+    'equipment.card.title': 'Graffiti removal and surface restoration',
+    'equipment.card.text': 'With Tornado ACS, graffiti is removed from walls quickly and easily. The patented systeco system works in a closed cycle—waste does not go outside.',
+    'equipment.feature1': 'No high pressure, water or chemicals',
+    'equipment.feature2': 'Gentle to surface and eco-friendly',
+    'equipment.feature3': 'Compact, only 220V required',
+    'equipment.feature4': 'Effective even in cold weather',
+    'equipment.feature5': 'Suitable for tiles, floors, monument restoration, soot removal after fires',
+
+    'gallery.title': 'Our Work',
+    'gallery.subtitle': 'Examples of completed projects',
+    'gallery.before': 'BEFORE',
+    'gallery.after': 'AFTER',
+    'gallery.carousel.aria': 'How we work',
+
+    'contact.title': 'Contact Us',
+    'contact.subtitle': 'Get a free consultation and cost estimate',
+    'contact.form.title': 'Send a Request',
+    'contact.form.subtitle': 'Fill out the form and we will contact you within 2 business days',
+    'form.name': 'Your name',
+    'form.phone': 'Phone',
+    'form.email': 'Email',
+    'form.message': 'Describe the task...',
+    'form.submit': 'Send request',
+    'form.hint': 'By clicking the button, you consent to the processing of personal data and agree to the privacy policy',
+    'form.success': 'Thanks! Your request has been sent.',
+
+    'contact.card.contact.title': 'Get in touch',
+    'contact.card.phone.note': 'Primary number',
+    'contact.card.email.note': 'Requests email',
+    'contact.card.address.street': 'Cesvaines 15A-211',
+    'contact.card.address.city': 'Riga, LV-1073, Latvia',
+
+    'contact.hours.title': 'Working hours',
+    'contact.hours.weekdays.label': 'Monday – Friday:',
+    'contact.hours.weekdays.value': '8:00 – 18:00',
+    'contact.hours.saturday.label': 'Saturday:',
+    'contact.hours.saturday.value': '9:00 – 16:00',
+    'contact.hours.sunday.label': 'Sunday:',
+    'contact.hours.sunday.value': 'Closed',
+    'contact.hours.badge.title': 'Emergency calls 24/7',
+    'contact.hours.badge.note': 'Available round-the-clock for urgent cases',
+
+    'contact.socials.title': 'Social media',
+    'contact.socials.subtitle': 'Follow our work and get care tips',
+    'social.facebook': 'Facebook',
+    'social.instagram': 'Instagram',
+    'social.whatsapp': 'WhatsApp',
+
+    'ui.prev': '‹',
+    'ui.next': '›',
+    'ui.call': 'Call',
+    'ui.lang': 'Change language',
+
+    'footer.copyright': '© 2024 City Wall Clean. All rights reserved. Professional cleaning in Latvia.'
+  }
+};
+
+
+// ========================== Ядро переключателя языка ==========================
 function initializeLanguage() {
     const savedLang = localStorage.getItem('selectedLanguage') || 'ru';
     switchLanguage(savedLang);
@@ -376,28 +475,32 @@ function switchLanguage(lang) {
   currentLanguage = lang;
   localStorage.setItem('selectedLanguage', lang);
 
-  // кнопки
+  // переключаем активное состояние на кнопках
   document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
   const btn = document.getElementById(`lang-${lang}`);
   if (btn) btn.classList.add('active');
 
   document.documentElement.lang = lang;
 
-  // ОБЩИЕ переводы, КРОМЕ hero.title (его соберём ниже отдельно)
+  // Текстовые узлы (innerHTML)
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
-    if (key === 'hero.title') return; // важно: пропускаем заголовок
-    if (translations[lang] && translations[lang][key]) {
-      el.innerHTML = translations[lang][key];
-    }
+    const value = translations[lang] && translations[lang][key];
+    if (value) el.innerHTML = value;
   });
 
-  // плейсхолдеры
+  // Плейсхолдеры
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     const key = el.getAttribute('data-i18n-placeholder');
-    if (translations[lang] && translations[lang][key]) {
-      el.placeholder = translations[lang][key];
-    }
+    const value = translations[lang] && translations[lang][key];
+    if (value) el.placeholder = value;
+  });
+
+  // ARIA
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+    const key = el.getAttribute('data-i18n-aria');
+    const value = translations[lang] && translations[lang][key];
+    if (value) el.setAttribute('aria-label', value);
   });
 
   // ТИТУЛ и мета
@@ -409,8 +512,13 @@ function switchLanguage(lang) {
     metaDesc.setAttribute('content', translations[lang]['hero.subtitle']);
   }
 
-  // СБОРКА заголовка: 1-е слово чёрное, остальное зелёное
+  // Сборка hero-title с чёрным 1-м словом и зелёным остальным
   setHeroTitle(lang);
+
+  // синхронизация активного языка в выпадающем меню
+  document.querySelectorAll('.lang-menu [data-lang]').forEach(el=>{
+    el.classList.toggle('is-active', el.dataset.lang === lang);
+  });
 }
 
 function setHeroTitle(lang){
@@ -418,18 +526,13 @@ function setHeroTitle(lang){
   if (!el) return;
 
   let raw = translations[lang]?.['hero.title'] || el.textContent.trim();
-
-
   if (raw.includes('<span')) {
     el.innerHTML = raw;
     return;
   }
-
-  
   const parts = raw.split(/\s+/);
   const first = parts.shift() || '';
   const rest = parts.join(' ');
-
   el.innerHTML =
     `<span class="hero-black">${first}</span>${rest ? ' ' : ''}` +
     (rest ? `<span class="hero-green">${rest}</span>` : '');
@@ -447,13 +550,11 @@ function selectLangFromMenu(code){
   document.querySelectorAll('.lang-menu [data-lang]').forEach(el=>{
     el.classList.toggle('is-active', el.dataset.lang === code);
   });
-  // close menu
   const menu = document.querySelector('.lang-mobile .lang-menu');
   const btn  = document.querySelector('.lang-mobile .lang-toggle');
   if(menu){ menu.classList.remove('open'); }
   if(btn){ btn.setAttribute('aria-expanded','false'); }
 }
-
 
 document.addEventListener('click', (e)=>{
   const toggle = e.target.closest('.lang-toggle');
@@ -476,7 +577,7 @@ document.addEventListener('keydown', (e)=>{
   }
 });
 
-// sincron active while start
+// стартовая синхронизация
 document.addEventListener('DOMContentLoaded', ()=>{
   const saved = localStorage.getItem('selectedLanguage') || 'ru';
   document.querySelectorAll('.lang-menu [data-lang]').forEach(el=>{
@@ -484,7 +585,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 });
 
-// Gallery functionality
+// ========================== Галерея (модалка) ==========================
 function initializeGallery() {
     const galleryImages = document.querySelectorAll('.gallery-item img');
     galleryImages.forEach(img => {
@@ -503,20 +604,18 @@ function closeModal() {
     document.getElementById('imageModal').style.display = 'none';
 }
 
-// Mobile menu functionality...
+// ========================== Mobile menu ==========================
 function toggleMobileMenu() {
     const mobileMenu = document.getElementById('mobileMenu');
     mobileMenu.classList.toggle('active');
 }
 
-// Smooth scrolling ...
+// ========================== Smooth scroll ==========================
 function scrollToContact() {
-    document.getElementById('contact').scrollIntoView({
-        behavior: 'smooth'
-    });
+    document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
 }
 
-// Form submission
+// ========================== Form submission ==========================
 function submitForm(event) {
     event.preventDefault();
     
@@ -526,7 +625,6 @@ function submitForm(event) {
     const email = formData.get('email');
     const message = formData.get('message');
     
-    // Create mailto link with form data
     const subject = encodeURIComponent('Заявка на очистку от ' + name);
     const body = encodeURIComponent(
         `Имя: ${name}\n` +
@@ -536,25 +634,22 @@ function submitForm(event) {
     );
     
     window.location.href = `mailto:info@cleanlines.lv?subject=${subject}&body=${body}`;
-    
-    // Reset form
     event.target.reset();
-    
-    // Show success message
     alert(translations[currentLanguage]['form.success'] || 'Спасибо! Ваша заявка отправлена.');
 }
 
-// Auto-scroll carousel on mobile
+// ========================== Auto-scroll carousel on mobile (с проверкой) ==========================
 let autoScrollTimer;
 if (window.innerWidth <= 768) {
     autoScrollTimer = setInterval(() => {
         moveCarousel(1);
     }, 3000);
-    
-    
-    document.getElementById('servicesCarousel').addEventListener('touchstart', () => {
-        clearInterval(autoScrollTimer);
-    });
+    const servCar = document.getElementById('servicesCarousel');
+    if(servCar){
+      servCar.addEventListener('touchstart', () => {
+          clearInterval(autoScrollTimer);
+      });
+    }
 }
 
 // Close mobile menu when clicking on links
@@ -566,19 +661,14 @@ document.querySelectorAll('.mobile-menu a').forEach(link => {
 
 // Close modal when clicking outside
 document.getElementById('imageModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeModal();
-    }
+    if (e.target === this) closeModal();
 });
-
 
 document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeModal();
-    }
+    if (e.key === 'Escape') closeModal();
 });
 
-// layy iamge load...
+// lazy image load...
 if ('IntersectionObserver' in window) {
     const imageObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
@@ -590,8 +680,6 @@ if ('IntersectionObserver' in window) {
             }
         });
     });
-
-    document.querySelectorAll('img[data-src]').forEach(img => {
-        imageObserver.observe(img);
-    });
+    document.querySelectorAll('img[data-src]').forEach(img => imageObserver.observe(img));
 }
+ 

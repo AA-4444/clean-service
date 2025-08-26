@@ -1028,7 +1028,7 @@ html {
 }
 
 /* ширина одного слайда = доступная ширина вьюпорта (без padding) */
-.gallery-slide{
+.gallery-slide {
   flex: 0 0 100%;
   border-radius: 12px;
   overflow: hidden;
