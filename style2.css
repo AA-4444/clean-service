@@ -1430,3 +1430,115 @@ html, body {
     padding: 0 12px;
   }
 }
+
+/* === Videos section === */
+.videos { padding: 64px 0; background: #fff; }
+.videos .section-header { text-align: center; margin-bottom: 28px; }
+
+.video-cats {
+  display: flex; gap: 12px; justify-content: center; align-items: center;
+  margin-bottom: 20px; flex-wrap: wrap;
+}
+.video-cat {
+  font-size: 14px; line-height: 1; padding: 8px 12px; border-radius: 999px;
+  background: #f3f4f6; color: #374151; cursor: pointer; user-select: none;
+  transition: transform .15s ease, background .15s ease;
+}
+.video-cat[aria-current="true"] { background: #22c55e; color: #fff; }
+.video-cat:hover { transform: translateY(-1px); }
+
+/* ——— Сделать карточки одинаковой высоты и прижать кнопку вниз ——— */
+.videos-grid { 
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 20px;
+  grid-auto-rows: 1fr;              /* строки одинаковой высоты в пределах ряда */
+}
+
+.video-card {
+  grid-column: span 4;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.06);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;                     /* растянуть карточку на всю высоту строки */
+}
+
+@media (max-width: 992px){ .video-card { grid-column: span 6; } }
+@media (max-width: 640px){ .video-card { grid-column: span 12; } }
+
+/* Ограничим описание, чтобы не «скакали» высоты внутри */
+.video-title { font-size: 18px; margin: 2px 2px 0; }
+.video-desc  { 
+  font-size: 14px; color: #6b7280; margin: 0 2px 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;            /* максимум 3 строки */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 3.6em;                /* резерв под 3 строки, чтобы кнопка не прыгала */
+}
+
+/* ——— Современная кнопка «Смотреть» ——— */
+.btn-watch {
+  margin-top: auto;                 /* прижать кнопку вниз карточки */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 8px 22px rgba(34, 197, 94, .25);
+  transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+}
+
+.btn-watch::after {
+  content: "▶";
+  font-size: 14px;
+  opacity: .9;
+}
+
+.btn-watch:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 26px rgba(34, 197, 94, .32);
+  filter: brightness(1.02);
+}
+
+.btn-watch:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 18px rgba(34, 197, 94, .28);
+  filter: brightness(.98);
+}
+
+.btn-watch:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, .35), 0 8px 22px rgba(34,197,94,.25);
+}
+
+/* ——— Доп. приятности ——— */
+.video-thumb { position: relative; border: none; padding: 0; background: transparent; cursor: pointer; border-radius: 10px; overflow: hidden; aspect-ratio: 16/9; }
+.video-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .35s ease; }
+.video-thumb:hover img { transform: scale(1.02); }
+.video-play {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-size: 42px; color: #fff; text-shadow: 0 3px 16px rgba(0,0,0,.35);
+  background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,.25) 100%);
+  transition: opacity .2s ease;
+}
+.video-thumb:hover .video-play { opacity: .8; }
+
+/* Модалка — как было */
+.modal-video { max-width: 960px; width: 100%; }
+#videoModal .modal-content { padding: 0; }
+#videoModal .close {
+  position: absolute; right: 8px; top: 6px; z-index: 2; font-size: 28px;
+  background: transparent; border: 0; color: #111; cursor: pointer;
+}

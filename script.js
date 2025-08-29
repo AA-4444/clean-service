@@ -294,7 +294,16 @@ const translations = {
     'ui.call': 'Позвонить',
     'ui.lang': 'Сменить язык',
 
-    'footer.copyright': '© 2024 City Wall Clean. Все права защищены. Профессиональная очистка в Латвии.'
+    'footer.copyright': '© 2024 City Wall Clean. Все права защищены.',
+    'video.title': 'Видео',
+'video.subtitle': 'Посмотрите, как мы работаем и как работает оборудование',
+'video.category.work': 'Наши работы',
+'video.category.equipment': 'Оборудование',
+'video.watch': 'Смотреть',
+'video.card.work1': 'Удаление граффити с кирпичного фасада за 3 минуты',
+'video.card.work2': 'Деликатная очистка природного камня без воды и химии',
+'video.card.equip1': 'Как работает вакуумная абразивная система',
+'video.card.equip2': 'Замкнутый цикл: пыль и отходы не попадают наружу',
   },
 
   ka: {
@@ -377,7 +386,17 @@ const translations = {
     'ui.call': 'დარეკვა',
     'ui.lang': 'ენის შეცვლა',
 
-    'footer.copyright': '© 2024 City Wall Clean. ყველა უფლება დაცულია. პროფესიონალური გაწმენდა ლატვიაში.'
+    'footer.copyright': '© 2024 City Wall Clean. ყველა უფლება დაცულია.',
+   
+'video.title': 'ვიდეო',
+'video.subtitle': 'ნახეთ როგორ ვმუშაობთ და როგორ მუშაობს აღჭურვილობა',
+'video.category.work': 'ჩვენი სამუშაოები',
+'video.category.equipment': 'აღჭურვილობა',
+'video.watch': 'ნახვა',
+'video.card.work1': 'გრაფიტის მოცილება აგურის ფასადიდან 3 წუთში',
+'video.card.work2': 'ბუნებრივი ქვის ფრთხილი გაწმენდა წყლისა და ქიმიის გარეშე',
+'video.card.equip1': 'როგორ მუშაობს ვაკუუმური აბრაზიული სისტემა',
+'video.card.equip2': 'დახურული ციკლი: მტვერი და ნარჩენები გარეთ არ გადის',
   },
 
   en: {
@@ -460,7 +479,17 @@ const translations = {
     'ui.call': 'Call',
     'ui.lang': 'Change language',
 
-    'footer.copyright': '© 2024 City Wall Clean. All rights reserved. Professional cleaning in Latvia.'
+    'footer.copyright': '© 2024 City Wall Clean. All rights reserved.',
+    // EN
+'video.title': 'Videos',
+'video.subtitle': 'See how we work and how the equipment performs',
+'video.category.work': 'Our Work',
+'video.category.equipment': 'Equipment',
+'video.watch': 'Watch',
+'video.card.work1': 'Graffiti removal from a brick facade in 3 minutes',
+'video.card.work2': 'Gentle cleaning of natural stone without water or chemicals',
+'video.card.equip1': 'How the vacuum abrasive system works',
+'video.card.equip2': 'Closed-loop: dust and waste do not escape',
   }
 };
 
@@ -682,4 +711,70 @@ if ('IntersectionObserver' in window) {
     });
     document.querySelectorAll('img[data-src]').forEach(img => imageObserver.observe(img));
 }
- 
+ // ===== Videos: фильтр категорий =====
+(function(){
+  const grid = document.getElementById('videosGrid');
+  const cats = document.querySelectorAll('.video-cat');
+  if(!grid || !cats.length) return;
+
+  cats.forEach(cat=>{
+    cat.addEventListener('click', ()=>{
+      cats.forEach(c=> c.removeAttribute('aria-current'));
+      cat.setAttribute('aria-current', 'true');
+      const type = cat.getAttribute('data-filter');
+      grid.querySelectorAll('.video-card').forEach(card=>{
+        const show = (type === 'work' && card.dataset.type === 'work') ||
+                     (type === 'equipment' && card.dataset.type === 'equipment');
+        card.style.display = show ? '' : 'none';
+      });
+    });
+  });
+
+  // активируем «work» по умолчанию
+  const first = document.querySelector('.video-cat[data-filter="work"]');
+  if(first){ first.click(); }
+})();
+
+// ===== Video modal (отдельно от image modal) =====
+function openVideo(src){
+  const modal = document.getElementById('videoModal');
+  const player = document.getElementById('modalVideo');
+  if(!modal || !player) return;
+
+  // Если нужен YouTube — можно так:
+  // modal.querySelector('.modal-video').innerHTML = '<button class="close" onclick="closeVideo()">&times;</button><div class="ratio"><iframe src="https://www.youtube.com/embed/ID?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
+
+  player.src = src;
+  player.currentTime = 0;
+  player.play().catch(()=>{ /* без звука/автоплей блоки — норм */ });
+
+  modal.style.display = 'block';
+  modal.setAttribute('aria-hidden', 'false');
+
+  // Закрыть по клику вне
+  modal.addEventListener('click', e=>{
+    if(e.target === modal){ closeVideo(); }
+  }, { once: true });
+
+  // Закрыть по ESC
+  document.addEventListener('keydown', onEscCloseVideo);
+}
+
+function onEscCloseVideo(e){
+  if(e.key === 'Escape'){ closeVideo(); }
+}
+
+function closeVideo(){
+  const modal = document.getElementById('videoModal');
+  const player = document.getElementById('modalVideo');
+  if(player){
+    try { player.pause(); } catch(_){}
+    player.removeAttribute('src'); // сброс, чтобы не продолжал играть
+    player.load();
+  }
+  if(modal){
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+  }
+  document.removeEventListener('keydown', onEscCloseVideo);
+}

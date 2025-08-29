@@ -251,6 +251,86 @@
   </div>
 </section>
 
+
+<!-- Videos Section -->
+<section id="videos" class="videos">
+  <div class="container">
+    <div class="section-header">
+      <h2 data-i18n="video.title">Видеo</h2>
+      <p data-i18n="video.subtitle">Посмотрите, как мы работаем и как работает оборудование</p>
+    </div>
+
+    <!-- Категории -->
+    <div class="video-cats">
+      <span class="video-cat" aria-current="true" data-filter="work" data-i18n="video.category.work">Наши работы</span>
+      <span class="video-cat" data-filter="equipment" data-i18n="video.category.equipment">Оборудование</span>
+    </div>
+
+    <!-- Сетка карточек -->
+    <div class="videos-grid" id="videosGrid">
+      <!-- Пример карточек «Работы» -->
+      <article class="video-card" data-type="work">
+        <button class="video-thumb" onclick="openVideo('images/Tallin VIDEO.mp4')" aria-label="Play video">
+          <img src="images/Tallin VIDEO.mp4" alt="" loading="lazy">
+          <span class="video-play" aria-hidden="true">▶</span>
+        </button>
+        <h3 class="video-title">Graffiti → Clean</h3>
+        <p class="video-desc" data-i18n="video.card.work1">Удаление граффити с кирпичного фасада за 3 минуты</p>
+        <button class="btn-ghost btn-watch" onclick="openVideo('images/Tallin VIDEO.mp4')" data-i18n="video.watch">Смотреть</button>
+      </article>
+
+      <article class="video-card" data-type="work">
+        <button class="video-thumb" onclick="openVideo('images/Bus STOP.mp4')" aria-label="Play video">
+          <img src="images/Bus STOP.mp4" alt="" loading="lazy">
+          <span class="video-play" aria-hidden="true">▶</span>
+        </button>
+        <h3 class="video-title">Stone Refresh</h3>
+        <p class="video-desc" data-i18n="video.card.work2">Деликатная очистка природного камня без воды и химии</p>
+        <button class="btn-ghost btn-watch" onclick="openVideo('images/Bus STOP.mp4')" data-i18n="video.watch">Смотреть</button>
+      </article>
+
+          <article class="video-card" data-type="work">
+        <button class="video-thumb" onclick="openVideo('images/20200619_120313.mp4')" aria-label="Play video">
+          <img src="images/20200619_120313.mp4" alt="" loading="lazy">
+          <span class="video-play" aria-hidden="true">▶</span>
+        </button>
+        <h3 class="video-title">Stone Refresh</h3>
+        <p class="video-desc" data-i18n="video.card.work2">Деликатная очистка природного камня без воды и химии</p>
+        <button class="btn-ghost btn-watch" onclick="openVideo('images/20200619_120313.mp4')" data-i18n="video.watch">Смотреть</button>
+      </article>
+
+      <!-- Пример карточек «Оборудование» -->
+      <article class="video-card" data-type="equipment">
+        <button class="video-thumb" onclick="openVideo('images/In Side of HOOD.mp4')" aria-label="Play video">
+          <img src="images/In Side of HOOD.mp4" alt="" loading="lazy">
+          <span class="video-play" aria-hidden="true">▶</span>
+        </button>
+        <h3 class="video-title">Tornado ACS</h3>
+        <p class="video-desc" data-i18n="video.card.equip1">Как работает вакуумная абразивная система</p>
+        <button class="btn-ghost btn-watch" onclick="openVideo('images/In Side of HOOD.mp4')" data-i18n="video.watch">Смотреть</button>
+      </article>
+
+      <article class="video-card" data-type="equipment">
+        <button class="video-thumb" onclick="openVideo('images/Tornado ACS reklama.mp4')" aria-label="Play video">
+          <img src="images/Tornado ACS reklama.mp4" alt="" loading="lazy">
+          <span class="video-play" aria-hidden="true">▶</span>
+        </button>
+        <h3 class="video-title">Closed-Loop</h3>
+        <p class="video-desc" data-i18n="video.card.equip2">Замкнутый цикл: пыль и отходы не попадают наружу</p>
+        <button class="btn-ghost btn-watch" onclick="openVideo('images/Tornado ACS reklama.mp4')" data-i18n="video.watch">Смотреть</button>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Video Modal -->
+<div id="videoModal" class="modal" aria-hidden="true">
+  <div class="modal-content modal-video">
+    <button class="close" onclick="closeVideo()" aria-label="Close">&times;</button>
+    <video id="modalVideo" playsinline controls preload="metadata" style="width:100%;height:auto;"></video>
+  </div>
+</div>
+
    <!-- Contact Section -->
 <section id="contact" class="contact">
   <div class="container">
